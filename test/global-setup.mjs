@@ -55,7 +55,7 @@ export async function globalSetup() {
         // Verify database was populated correctly
         const verifyResponse = await makeApiRequest({
           endpointPath: '/api/v1/search',
-          queryParams: { q: 'Matti Virtanen' },
+          queryParams: { q: 'react' },
         });
 
         if (!verifyResponse.ok) {
