@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * Standalone script to capture OpenAI embeddings for refresh test fixtures
- * 
- * This script reads Agileday fixtures and calls OpenAI API to generate embeddings.
- * Run this ONCE with a real OpenAI API key to capture fixtures for refresh operations.
- * 
+ * Standalone script to capture Vertex AI embeddings for refresh test fixtures
+ *
+ * Reads Agileday fixtures and TEST_SEARCH_QUERY values, calls Vertex AI to generate embeddings.
+ * Run ONCE with application default credentials to capture fixtures.
+ *
  * Usage:
- *   export OPENAI_KEY=<your-openai-key>
+ *   gcloud auth application-default login
  *   node test/scripts/capture-refresh-embeddings.mjs
  */
 
@@ -14,158 +14,84 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { createHash } from 'crypto';
 import { fileURLToPath } from 'url';
+import { GoogleAuth } from 'google-auth-library';
 import { TEST_CONFIG } from '../config.mjs';
+import { GCP_SCOPE, GCP_VERTEX_URL } from '../../src/constants.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const FIXTURES_DIR = join(__dirname, '../../test/fixtures');
 const AGILEDAY_DIR = join(FIXTURES_DIR, 'agileday');
-const EMBEDDINGS_DIR = join(FIXTURES_DIR, 'openai-embeddings');
-const EMBEDDING_MODEL = 'text-embedding-3-small';
-const OPENAI_API_URL = 'https://api.openai.com/v1/embeddings';
+const EMBEDDINGS_DIR = join(FIXTURES_DIR, 'vertex-ai-embeddings');
 
-// Ensure embeddings directory exists
 if (!existsSync(EMBEDDINGS_DIR)) {
   mkdirSync(EMBEDDINGS_DIR, { recursive: true });
 }
 
-// Get OpenAI API key from environment
-const OPENAI_KEY = process.env.OPENAI_KEY;
-if (!OPENAI_KEY) {
-  console.error('❌ OPENAI_KEY environment variable is required');
-  console.error('   Set it with: export OPENAI_KEY=<your-openai-key>');
-  process.exit(1);
-}
-
-/**
- * Generate hash for text (SHA256, first 16 chars)
- */
 function generateHash(text) {
   return createHash('sha256').update(text).digest('hex').substring(0, 16);
 }
 
-/**
- * Call OpenAI API to generate embedding
- */
+const auth = new GoogleAuth({ scopes: [GCP_SCOPE] });
+const client = await auth.getClient();
+
 async function generateEmbedding(text) {
-  const response = await fetch(OPENAI_API_URL, {
+  const { data } = await client.request({
+    url: GCP_VERTEX_URL,
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${OPENAI_KEY}`,
-    },
-    body: JSON.stringify({
-      model: EMBEDDING_MODEL,
-      input: text,
-    }),
+    data: { instances: [{ content: text }] },
   });
-
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`OpenAI API error (${response.status}): ${error}`);
-  }
-
-  return await response.json();
+  return data;
 }
 
-/**
- * Save fixture to disk
- */
-function saveFixture(hash, text, response) {
-  const fixturePath = join(EMBEDDINGS_DIR, `${hash}.json`);
-  const fixture = {
-    text,
-    model: EMBEDDING_MODEL,
-    response,
-  };
-  writeFileSync(fixturePath, JSON.stringify(fixture, null, 2));
-}
-
-/**
- * Process a single text and save fixture
- */
-async function processText(text, type, index) {
+async function captureFixture(text) {
   const hash = generateHash(text);
   const fixturePath = join(EMBEDDINGS_DIR, `${hash}.json`);
 
-  // Skip if fixture already exists (idempotent)
   if (existsSync(fixturePath)) {
-    console.log(`⏭️  Skipping ${type} #${index + 1} (fixture already exists): ${text.substring(0, 50)}...`);
+    console.log(`⏭️  Skipping (already captured): "${text.substring(0, 60)}"`);
     return;
   }
 
   try {
-    console.log(`📸 Capturing embedding for ${type} #${index + 1}: ${text.substring(0, 50)}...`);
     const response = await generateEmbedding(text);
-    saveFixture(hash, text, response);
-    console.log(`   ✅ Saved: ${hash}.json`);
+    const fixture = { text, model: 'text-embedding-005', response };
+    writeFileSync(fixturePath, JSON.stringify(fixture, null, 2));
+    console.log(`✅ Captured: "${text.substring(0, 60)}"`);
   } catch (error) {
-    console.error(`   ❌ Failed to capture ${type} #${index + 1}:`, error.message);
-    throw error;
+    console.error(`❌ Failed to capture "${text.substring(0, 60)}":`, error.message);
   }
 }
 
-/**
- * Main execution
- */
-async function main() {
-  console.log('🚀 Starting embedding capture for refresh test fixtures...\n');
+// Collect texts from Agileday fixtures (employee externalDescriptions + project descriptions)
+const textsToCapture = new Set();
 
-  // Read Agileday fixtures
-  const employeePath = join(AGILEDAY_DIR, 'employee.json');
-  const projectPath = join(AGILEDAY_DIR, 'history_project.json');
-
-  if (!existsSync(employeePath)) {
-    console.error(`❌ Employee fixture not found: ${employeePath}`);
-    process.exit(1);
-  }
-
-  if (!existsSync(projectPath)) {
-    console.error(`❌ Project fixture not found: ${projectPath}`);
-    process.exit(1);
-  }
-
-  const employees = JSON.parse(readFileSync(employeePath, 'utf-8'));
-  const projects = JSON.parse(readFileSync(projectPath, 'utf-8'));
-
-  console.log(`📊 Found ${employees.length} employees and ${projects.length} projects\n`);
-
-  // Process employee externalDescription fields
-  console.log('👥 Processing employee descriptions...');
-  for (let i = 0; i < employees.length; i++) {
-    const employee = employees[i];
-    if (employee.externalDescription) {
-      await processText(employee.externalDescription, 'employee', i);
+const employeeFiles = ['employee.json'];
+for (const file of employeeFiles) {
+  const filePath = join(AGILEDAY_DIR, file);
+  if (!existsSync(filePath)) continue;
+  const data = JSON.parse(readFileSync(filePath, 'utf-8'));
+  const employees = Array.isArray(data) ? data : [data];
+  for (const emp of employees) {
+    if (emp.externalDescription) textsToCapture.add(emp.externalDescription);
+    if (emp.projects) {
+      for (const proj of emp.projects) {
+        if (proj.description) textsToCapture.add(proj.description);
+      }
     }
   }
-
-  // Process project description fields
-  console.log('\n📁 Processing project descriptions...');
-  for (let i = 0; i < projects.length; i++) {
-    const project = projects[i];
-    if (project.description) {
-      await processText(project.description, 'project', i);
-    }
-  }
-
-  const searchQueries = [...new Set(
-    Object.values(TEST_CONFIG.TEST_SEARCH_QUERY)
-      .filter(v => typeof v === 'string' && v.length > 0)
-      .map(v => String(v.toLowerCase()).replace(/\s+/g, ' ').trim())
-  )];
-
-  console.log('\n🔍 Processing search queries...');
-  for (let i = 0; i < searchQueries.length; i++) {
-    await processText(searchQueries[i], 'search-query', i);
-  }
-
-  console.log('\n🎉 Embedding capture complete!');
-  console.log(`   Fixtures saved to: ${EMBEDDINGS_DIR}`);
-  console.log('\n💡 Next step: Run test/scripts/generate-fixture-index.mjs to update the index');
 }
 
-main().catch((error) => {
-  console.error('\n❌ Fatal error:', error.message);
-  process.exit(1);
-});
+// Collect search query strings from TEST_CONFIG
+for (const value of Object.values(TEST_CONFIG.TEST_SEARCH_QUERY)) {
+  if (typeof value === 'string' && value.trim()) {
+    textsToCapture.add(value.toLowerCase().replace(/\s+/g, ' ').trim());
+  }
+}
+
+console.log(`📋 Capturing embeddings for ${textsToCapture.size} unique texts...`);
+for (const text of textsToCapture) {
+  await captureFixture(text);
+}
+console.log('✨ Done! Run node test/scripts/generate-fixture-index.mjs next.');

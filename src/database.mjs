@@ -12,9 +12,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const migrationsDir = path.join(__dirname, '..', 'migrations');
 
-/**
- * Run all SQL migrations from the migrations directory
- */
 function runMigrations(db) {
   const files = fs.readdirSync(migrationsDir)
     .filter(f => f.endsWith('.sql'))
@@ -105,7 +102,7 @@ export async function updateDatabase(token) {
   console.log(`\n👥 Total consultant-opening records (after flatMap): ${openings.length}`);
 
   const insertEmp = db.prepare(
-    `INSERT OR IGNORE INTO employees (id, name, description, segment) VALUES (?, ?, ?, ?)`
+    `INSERT OR IGNORE INTO employees (id, description, segment) VALUES (?, ?, ?, ?)`
   );
   const insertVec = db.prepare(
     `INSERT INTO vec_employees (employee_id, embed) VALUES (?, ?)`
