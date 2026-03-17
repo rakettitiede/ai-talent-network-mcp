@@ -29,7 +29,7 @@ CREATE TABLE employees (
 
 CREATE VIRTUAL TABLE vec_employees USING vec0(
   employee_id TEXT PRIMARY KEY,
-  embed FLOAT[1536] distance_metric=cosine
+  embed FLOAT[768] distance_metric=cosine
 );
 
 CREATE TABLE employee_skills (
@@ -53,7 +53,7 @@ CREATE TABLE project_history (
 
 CREATE VIRTUAL TABLE vec_projects USING vec0(
   project_id TEXT PRIMARY KEY,
-  embed FLOAT[1536] distance_metric=cosine
+  embed FLOAT[768] distance_metric=cosine
 );
 
 CREATE TABLE openings (
