@@ -14,8 +14,8 @@ import { updateDatabase } from "./database.mjs";
  *       properties:
  *         id:
  *           type: string
- *           description: Candidate or project ID
- *           example: "candidate:a1b2c3d4-1234-5678-9abc-def012345678"
+ *           description: Candidate or project ID — uses rotating temporary identifiers (temp:xxxxxxxx) generated per database refresh
+ *           example: "candidate:temp:a1b2c3d4"
  *         title:
  *           type: string
  *           description: "Availability status followed by match reason(s), separated by em dash (—)"
@@ -74,7 +74,7 @@ import { updateDatabase } from "./database.mjs";
  *         id:
  *           type: string
  *           description: Document ID (candidate:uuid or project:uuid)
- *           example: "candidate:a1b2c3d4-1234-5678-9abc-def012345678"
+ *           example: "candidate:temp:a1b2c3d4"
  *         title:
  *           type: string
  *           description: "'Candidate found' or 'Candidate found by project'"
@@ -140,13 +140,13 @@ export const apiRouterV1 = express.Router();
  *                 summary: Example search results
  *                 value:
  *                   results:
- *                     - id: "candidate:a1b2c3d4-1234-5678-9abc-def012345678"
+ *                     - id: "candidate:temp:a1b2c3d4"
  *                       title: "Available now — matching skills with proficiency: React, TypeScript"
  *                       url: "https://www.rakettitiede.com"
- *                     - id: "candidate:b2c3d4e5-2345-6789-0bcd-ef0123456789"
+ *                     - id: "candidate:temp:b2c3d4e5"
  *                       title: "Available after 2026-12-31 (current project: Microservices Platform) — profile description matches at 88%"
  *                       url: "https://www.rakettitiede.com"
- *                     - id: "project:c3d4e5f6-3456-7890-1cde-f01234567890"
+ *                     - id: "project:temp:c3d4e5f6"
  *                       title: "Currently unavailable (current project: Analytics Platform, no end date) — history project matches at 82%: Built a real-time data pipeline using React and GraphQL."
  *                       url: "https://www.rakettitiede.com"
  *                   count: 3
@@ -201,7 +201,7 @@ apiRouterV1.get("/search", async (req, res) => {
  *         schema:
  *           type: string
  *         description: Document ID from search results (candidate:uuid or project:uuid)
- *         example: "candidate:a1b2c3d4-1234-5678-9abc-def012345678"
+ *         example: "candidate:temp:a1b2c3d4"
  *     responses:
  *       200:
  *         description: Document retrieved successfully
@@ -213,7 +213,7 @@ apiRouterV1.get("/search", async (req, res) => {
  *               candidateResponse:
  *                 summary: Candidate document
  *                 value:
- *                   id: "candidate:a1b2c3d4-1234-5678-9abc-def012345678"
+ *                   id: "candidate:temp:a1b2c3d4"
  *                   title: "Candidate found"
  *                   text:
  *                     description: "Experienced fullstack developer specializing in React, Node.js, and cloud solutions."
@@ -232,7 +232,7 @@ apiRouterV1.get("/search", async (req, res) => {
  *               projectResponse:
  *                 summary: Project document (candidate found via project history)
  *                 value:
- *                   id: "project:c3d4e5f6-3456-7890-1cde-f01234567890"
+ *                   id: "project:temp:c3d4e5f6"
  *                   title: "Candidate found by project"
  *                   text:
  *                     description: "Experienced DevOps engineer specializing in cloud infrastructure and CI/CD pipelines."
