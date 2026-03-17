@@ -4,7 +4,7 @@ export const TEST_CONFIG = {
   SERVER_URL: `http://localhost:8080`,
   AGILEDAY_BASE_URL: 'http://localhost:3000',
   API_KEY: 'test-api-key',
-  GCP_MOCK_VERTEX_URL: 'http://localhost:3001',
+  GCP_MOCK_VERTEX_URL: 'http://localhost:3001/v1/projects/test-project/locations/europe-north1/publishers/google/models/text-embedding-005:predict',
 
   TEST_NOT_FOUND_ID: '00000000-0000-0000-0000-000000000000',
   TEST_INVALID_ID: 'invalid-id-123',
@@ -26,7 +26,7 @@ export const TEST_CONFIG = {
   },
 };
 
-export const RAKETTITIEDE_WEBSITE = 'https://www.rakettiidee.com';
+export const RAKETTITIEDE_WEBSITE = 'https://www.rakettitiede.com';
 
 // Generic API request utility
 export async function makeApiRequest({
@@ -40,35 +40,31 @@ export async function makeApiRequest({
 }) {
   const url = `${TEST_CONFIG.SERVER_URL}${endpointPath}`;
   const params = new URLSearchParams(queryParams);
-  
-  // Add API key to query params if requested
+
   if (includeApiKey && apiKeyInQuery) {
     params.set('api_key', TEST_CONFIG.API_KEY);
   }
-  
+
   const urlWithParams = params.toString() ? `${url}?${params}` : url;
-  
+
   const fetchOptions = {
     method,
     headers: { ...headers },
   };
-  
-  // Add API key to headers if requested
+
   if (includeApiKey && !apiKeyInQuery) {
     fetchOptions.headers['X-API-Key'] = TEST_CONFIG.API_KEY;
   }
-  
-  // Add body for POST requests
+
   if (body) {
     fetchOptions.headers['Content-Type'] = 'application/json';
     fetchOptions.body = JSON.stringify(body);
   }
-  
+
   const response = await fetch(urlWithParams, fetchOptions);
   return response;
 }
 
-// API request utilities for integration tests
 export async function apiSearch(query) {
   const response = await makeApiRequest({
     endpointPath: '/api/v1/search',
@@ -96,18 +92,6 @@ export async function apiRefresh(token) {
   return await response.json();
 }
 
-/**
- * Creates reusable API key authentication tests for an endpoint
- * @param {Object} options - Configuration for the API key tests
- * @param {string} options.endpointPath - The endpoint path (e.g., '/api/v1/search', '/api/v1/fetch')
- * @param {string} options.endpointName - The endpoint name for test descriptions (e.g., '/search', '/fetch')
- * @param {string} [options.method='GET'] - HTTP method ('GET' or 'POST')
- * @param {Object} [options.queryParams={}] - Query parameters for the request
- * @param {Object} [options.body=null] - Request body (for POST requests)
- * @param {Function} [options.successValidator] - Optional function to validate successful response
- * @param {boolean} [options.testQueryParam=true] - Whether to test API key in query parameter (default: true)
- * @returns {Function} A function that creates test cases when called with describe, it, assert
- */
 export function createApiKeyTests({
   endpointPath,
   endpointName,
@@ -120,7 +104,6 @@ export function createApiKeyTests({
   return (describe, it, assert) => {
     describe('API Key authentication', () => {
       it(`should accept valid API key in header for ${endpointName} endpoint`, async () => {
-        // Act
         const response = await makeApiRequest({
           endpointPath,
           method,
@@ -129,11 +112,8 @@ export function createApiKeyTests({
           includeApiKey: true,
           apiKeyInQuery: false,
         });
-
-        // Assert
         assert.strictEqual(response.status, 200);
         assert.ok(response.ok);
-        
         if (successValidator) {
           const data = await response.json();
           successValidator(data);
@@ -142,7 +122,6 @@ export function createApiKeyTests({
 
       if (testQueryParam) {
         it(`should accept valid API key in query parameter for ${endpointName} endpoint`, async () => {
-          // Act
           const response = await makeApiRequest({
             endpointPath,
             method,
@@ -151,11 +130,8 @@ export function createApiKeyTests({
             includeApiKey: true,
             apiKeyInQuery: true,
           });
-
-          // Assert
           assert.strictEqual(response.status, 200);
           assert.ok(response.ok);
-          
           if (successValidator) {
             const data = await response.json();
             successValidator(data);
@@ -164,7 +140,6 @@ export function createApiKeyTests({
       }
 
       it(`should reject request without API key for ${endpointName} endpoint`, async () => {
-        // Act
         const response = await makeApiRequest({
           endpointPath,
           method,
@@ -172,25 +147,20 @@ export function createApiKeyTests({
           body,
           includeApiKey: false,
         });
-
-        // Assert
         assert.strictEqual(response.status, 401);
         const data = await response.json();
         assert.deepStrictEqual(data, { error: 'Unauthorized' });
       });
 
       it(`should reject request with invalid API key for ${endpointName} endpoint`, async () => {
-        // Act
         const response = await makeApiRequest({
           endpointPath,
           method,
           queryParams,
           body,
           headers: { 'X-API-Key': 'invalid-api-key' },
-          includeApiKey: false, // We're manually setting invalid key in headers
+          includeApiKey: false,
         });
-
-        // Assert
         assert.strictEqual(response.status, 401);
         const data = await response.json();
         assert.deepStrictEqual(data, { error: 'Unauthorized' });
@@ -216,9 +186,9 @@ export class MockApiServerManager {
           ...process.env,
         },
         stdio: ['pipe', 'pipe', 'pipe'],
-        cwd: cwd,
+        cwd,
       });
-      
+
       this.serverProcess.stdout.on('data', (data) => {
         const output = data.toString();
         if (output.includes('🚀 Mock Agileday API server running') && !this.serverReady) {
@@ -226,14 +196,14 @@ export class MockApiServerManager {
           resolve(this.serverProcess);
         }
       });
-      
+
       this.serverProcess.stderr.on('data', (data) => {
         const output = data.toString();
         if (output.includes('Error:') || output.includes('EADDRINUSE')) {
           reject(new Error(`Mock API server error: ${data.toString()}`));
         }
       });
-      
+
       this.serverProcess.on('error', (err) => {
         reject(err);
       });
@@ -241,13 +211,9 @@ export class MockApiServerManager {
   }
 
   stop() {
-    if (!this.serverProcess) {
-      return Promise.resolve();
-    }
-
+    if (!this.serverProcess) return Promise.resolve();
     return new Promise((resolve) => {
       this.serverProcess.kill('SIGINT');
-
       this.serverProcess.on('exit', () => {
         this.serverProcess = null;
         this.serverReady = false;
@@ -274,9 +240,9 @@ export class MockVertexAiServerManager {
           ...process.env,
         },
         stdio: ['pipe', 'pipe', 'pipe'],
-        cwd: cwd,
+        cwd,
       });
-      
+
       this.serverProcess.stdout.on('data', (data) => {
         const output = data.toString();
         if (output.includes('🚀 Mock Vertex AI server running') && !this.serverReady) {
@@ -284,14 +250,14 @@ export class MockVertexAiServerManager {
           resolve(this.serverProcess);
         }
       });
-      
+
       this.serverProcess.stderr.on('data', (data) => {
         const output = data.toString();
         if (output.includes('Error:') || output.includes('EADDRINUSE')) {
-          reject(new Error(`Mock OpenAI API server error: ${data.toString()}`));
+          reject(new Error(`Mock Vertex AI server error: ${data.toString()}`));
         }
       });
-      
+
       this.serverProcess.on('error', (err) => {
         reject(err);
       });
@@ -299,10 +265,7 @@ export class MockVertexAiServerManager {
   }
 
   stop() {
-    if (!this.serverProcess) {
-      return Promise.resolve();
-    }
-
+    if (!this.serverProcess) return Promise.resolve();
     return new Promise((resolve) => {
       this.serverProcess.kill('SIGINT');
       this.serverProcess.on('exit', () => {
@@ -333,8 +296,9 @@ export class ServerManager {
           ...process.env,
         },
         stdio: ['pipe', 'pipe', 'pipe'],
-        cwd: cwd,
+        cwd,
       });
+
       this.serverProcess.stdout.on('data', (data) => {
         const output = data.toString();
         if (output.includes('🚀 Listening on') && !this.serverReady) {
@@ -342,12 +306,14 @@ export class ServerManager {
           resolve(this.serverProcess);
         }
       });
+
       this.serverProcess.stderr.on('data', (data) => {
         const output = data.toString();
         if (output.includes('Error:') || output.includes('FATAL')) {
           reject(new Error(`Server error: ${data.toString()}`));
         }
       });
+
       this.serverProcess.on('error', (err) => {
         reject(err);
       });
@@ -355,13 +321,9 @@ export class ServerManager {
   }
 
   stop() {
-    if (!this.serverProcess) {
-      return Promise.resolve();
-    }
-
+    if (!this.serverProcess) return Promise.resolve();
     return new Promise((resolve) => {
       this.serverProcess.kill('SIGINT');
-
       this.serverProcess.on('exit', () => {
         this.serverProcess = null;
         this.serverReady = false;
