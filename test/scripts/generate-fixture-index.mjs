@@ -10,7 +10,7 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const FIXTURES_DIR = join(__dirname, '../../test/fixtures/openai-embeddings');
+const FIXTURES_DIR = join(__dirname, '../../test/fixtures/vertex-ai-embeddings');
 const INDEX_FILE = join(FIXTURES_DIR, 'index.mjs');
 
 if (!existsSync(FIXTURES_DIR)) {

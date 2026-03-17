@@ -67,19 +67,23 @@ async function captureFixture(text) {
 // Collect texts from Agileday fixtures (employee externalDescriptions + project descriptions)
 const textsToCapture = new Set();
 
-const employeeFiles = ['employee.json'];
-for (const file of employeeFiles) {
-  const filePath = join(AGILEDAY_DIR, file);
-  if (!existsSync(filePath)) continue;
-  const data = JSON.parse(readFileSync(filePath, 'utf-8'));
+// Employee externalDescriptions
+const employeePath = join(AGILEDAY_DIR, 'employee.json');
+if (existsSync(employeePath)) {
+  const data = JSON.parse(readFileSync(employeePath, 'utf-8'));
   const employees = Array.isArray(data) ? data : [data];
   for (const emp of employees) {
     if (emp.externalDescription) textsToCapture.add(emp.externalDescription);
-    if (emp.projects) {
-      for (const proj of emp.projects) {
-        if (proj.description) textsToCapture.add(proj.description);
-      }
-    }
+  }
+}
+
+// Project descriptions (separate fixture — /api/v1/history_project)
+const projectPath = join(AGILEDAY_DIR, 'history_project.json');
+if (existsSync(projectPath)) {
+  const data = JSON.parse(readFileSync(projectPath, 'utf-8'));
+  const projects = Array.isArray(data) ? data : [data];
+  for (const proj of projects) {
+    if (proj.description) textsToCapture.add(proj.description);
   }
 }
 
