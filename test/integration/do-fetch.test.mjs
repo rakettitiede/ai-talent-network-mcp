@@ -11,13 +11,15 @@ import {
 describe('🕵 Test do-fetch calls:', async () => {
 
   it('candidate found', async () => {
-    // IDs are temp:xxxxxxxx generated at refresh time — get them dynamically from search
+    // Arrange: IDs are temp:xxxxxxxx generated at refresh time — get them dynamically from search
     const searchResult = await apiSearch(TEST_CONFIG.TEST_SEARCH_QUERY.react);
     const candidateResult = searchResult.results.find(r => r.id.startsWith('candidate:'));
     assert.ok(candidateResult, 'Should find a candidate in search results');
 
+    // Act
     const doc = await apiFetch(candidateResult.id);
 
+    // Assert
     assert.strictEqual(doc.id, candidateResult.id);
     assert.strictEqual(doc.title, 'Candidate found');
     assert.strictEqual(doc.url, RAKETTITIEDE_WEBSITE);
@@ -35,12 +37,15 @@ describe('🕵 Test do-fetch calls:', async () => {
   });
 
   it('skills have correct structure (name, proficiency, motivation)', async () => {
+    // Arrange
     const searchResult = await apiSearch(TEST_CONFIG.TEST_SEARCH_QUERY.react);
     const candidateResult = searchResult.results.find(r => r.id.startsWith('candidate:'));
     assert.ok(candidateResult, 'Should find a candidate');
 
+    // Act
     const doc = await apiFetch(candidateResult.id);
 
+    // Assert
     doc.text.skills.forEach(skill => {
       assert.strictEqual(typeof skill.name, 'string', 'Skill should have name');
       assert.strictEqual(typeof skill.proficiency, 'number', 'Skill should have proficiency');
@@ -51,7 +56,7 @@ describe('🕵 Test do-fetch calls:', async () => {
   });
 
   it('project found via search', async () => {
-    // Try multiple queries to find a project result (depends on vector similarity with mock fixtures)
+    // Arrange: try multiple queries to find a project result (depends on vector similarity with mock fixtures)
     const queries = [TEST_CONFIG.TEST_SEARCH_QUERY.corporateBanking, TEST_CONFIG.TEST_SEARCH_QUERY.default, TEST_CONFIG.TEST_SEARCH_QUERY.react];
     let projectResult = null;
     for (const query of queries) {
@@ -65,8 +70,10 @@ describe('🕵 Test do-fetch calls:', async () => {
     // Skip if no project results — mock embeddings may not match within threshold
     if (!projectResult) return;
 
+    // Act
     const doc = await apiFetch(projectResult.id);
 
+    // Assert
     assert.strictEqual(doc.id, projectResult.id);
     assert.strictEqual(doc.title, 'Candidate found by project');
     assert.strictEqual(doc.url, RAKETTITIEDE_WEBSITE);
@@ -84,7 +91,10 @@ describe('🕵 Test do-fetch calls:', async () => {
   });
 
   it('candidate not found returns not found document', async () => {
+    // Act
     const doc = await apiFetch(`candidate:${TEST_CONFIG.TEST_NOT_FOUND_ID}`);
+
+    // Assert
     assert.strictEqual(doc.id, `candidate:${TEST_CONFIG.TEST_NOT_FOUND_ID}`);
     assert.strictEqual(doc.title, 'Not found');
     assert.strictEqual(doc.text, '');
@@ -93,7 +103,10 @@ describe('🕵 Test do-fetch calls:', async () => {
   });
 
   it('project not found returns not found document', async () => {
+    // Act
     const doc = await apiFetch(`project:${TEST_CONFIG.TEST_INVALID_ID}`);
+
+    // Assert
     assert.strictEqual(doc.id, `project:${TEST_CONFIG.TEST_INVALID_ID}`);
     assert.strictEqual(doc.title, 'Not found');
     assert.strictEqual(doc.text, '');
