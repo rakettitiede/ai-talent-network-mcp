@@ -1,0 +1,573 @@
+[
+  {
+    "id": "a1b2c3d4-1234-5678-9abc-def012345678",
+    "externalId": "EMP001",
+    "name": "Matti Virtanen",
+    "firstName": "Matti",
+    "lastName": "Virtanen",
+    "description": "Senior fullstack developer with strong React and Node.js expertise. Passionate about clean code and user experience.",
+    "externalDescription": "Experienced fullstack developer specializing in modern web technologies and cloud solutions.",
+    "title": "Senior Fullstack Developer",
+    "salutation": "Mr.",
+    "email": "matti.virtanen@example.com",
+    "phone": "+358401234567",
+    "avatar": "https://i.pravatar.cc/150?u=matti.virtanen",
+    "avatarFileId": "avatar-001",
+    "office": "Helsinki",
+    "nationality": "Finnish",
+    "rotation": "Normal",
+    "rotationDescription": "Standard 5-day work week",
+    "dream": "To lead innovative AI-powered projects",
+    "githubHandle": "mvirtanen",
+    "slackHandle": "@matti.virtanen",
+    "linkedinHandle": "mattivirtanen",
+    "twitterHandle": "matti_dev",
+    "stackOverflowHandle": "mvirtanen",
+    "startDate": "2020-03-15",
+    "endDate": null,
+    "birthDate": "1990-05-20",
+    "disabled": false,
+    "segment": "Employee",
+    "loginType": "SSO",
+    "useFlexHours": true,
+    "createdAt": "2020-03-01T10:00:00Z",
+    "updatedAt": "2025-12-10T14:30:00Z",
+    "seniorityId": "senior-001",
+    "businessUnitId": "bu-tech-001",
+    "companyId": "rakettitiede-001",
+    "primaryTeamId": "team-fullstack-001",
+    "supervisorId": "super-001",
+    "address": "addr-001",
+    "regionId": "region-helsinki-001",
+    "userName": "matti.virtanen",
+    "accessRoles": [
+      {
+        "role": "employee"
+      },
+      {
+        "role": "consultant"
+      }
+    ],
+    "roles": [
+      {
+        "id": "role-001",
+        "name": "Fullstack Developer"
+      }
+    ],
+    "teams": [
+      {
+        "id": "team-fullstack-001",
+        "name": "Fullstack Team"
+      }
+    ],
+    "skills": [
+      {
+        "id": "skill-react-001",
+        "proficiency": 5,
+        "motivation": 5,
+        "name": "React",
+        "category": "Frontend",
+        "externalId": "SKILL-REACT",
+        "isCoreSkill": true,
+        "visibleInCv": true,
+        "experience": "5 years",
+        "updatedAt": "2025-11-15T10:00:00Z",
+        "createdAt": "2020-03-15T10:00:00Z"
+      },
+      {
+        "id": "skill-node-001",
+        "proficiency": 4,
+        "motivation": 4,
+        "name": "Node.js",
+        "category": "Backend",
+        "externalId": "SKILL-NODE",
+        "isCoreSkill": true,
+        "visibleInCv": true,
+        "experience": "4 years",
+        "updatedAt": "2025-11-15T10:00:00Z",
+        "createdAt": "2020-03-15T10:00:00Z"
+      },
+      {
+        "id": "skill-typescript-001",
+        "proficiency": 5,
+        "motivation": 5,
+        "name": "TypeScript",
+        "category": "Programming Language",
+        "externalId": "SKILL-TS",
+        "isCoreSkill": true,
+        "visibleInCv": true,
+        "experience": "5 years",
+        "updatedAt": "2025-11-15T10:00:00Z",
+        "createdAt": "2020-03-15T10:00:00Z"
+      },
+      {
+        "id": "skill-postgres-001",
+        "proficiency": 4,
+        "motivation": 3,
+        "name": "PostgreSQL",
+        "category": "Database",
+        "externalId": "SKILL-PG",
+        "isCoreSkill": false,
+        "visibleInCv": true,
+        "experience": "3 years",
+        "updatedAt": "2025-11-15T10:00:00Z",
+        "createdAt": "2021-06-01T10:00:00Z"
+      },
+      {
+        "id": "skill-graphql-001",
+        "proficiency": 4,
+        "motivation": 5,
+        "name": "GraphQL",
+        "category": "API",
+        "externalId": "SKILL-GQL",
+        "isCoreSkill": false,
+        "visibleInCv": true,
+        "experience": "2 years",
+        "updatedAt": "2025-11-15T10:00:00Z",
+        "createdAt": "2023-01-15T10:00:00Z"
+      }
+    ],
+    "certificates": [
+      {
+        "id": "cert-001",
+        "name": "AWS Certified Solutions Architect",
+        "description": "Associate level certification",
+        "issuer": "Amazon Web Services",
+        "issued": "2024-03-15",
+        "expires": "2027-03-15"
+      }
+    ],
+    "experiences": [
+      {
+        "id": "exp-001"
+      }
+    ],
+    "employeeCosts": [
+      {
+        "id": "cost-001",
+        "employeeId": "a1b2c3d4-1234-5678-9abc-def012345678",
+        "hourlyCost": 65,
+        "currency": "EUR",
+        "startDate": "2025-01-01"
+      }
+    ],
+    "labels": [
+      {
+        "id": "label-001",
+        "name": "Available"
+      },
+      {
+        "id": "label-002",
+        "name": "Remote Work"
+      }
+    ]
+  },
+  {
+    "id": "b2c3d4e5-2345-6789-0bcd-ef0123456789",
+    "externalId": "EMP002",
+    "name": "Jane Smith",
+    "firstName": "Jane",
+    "lastName": "Smith",
+    "description": "Backend developer with expertise in Java and Spring Boot.",
+    "externalDescription": "Experienced backend developer specializing in Java, Spring Boot, and microservices architecture.",
+    "title": "Senior Backend Developer",
+    "salutation": "Ms.",
+    "email": "jane.smith@example.com",
+    "phone": "+358401234568",
+    "avatar": "https://i.pravatar.cc/150?u=jane.smith",
+    "avatarFileId": "avatar-002",
+    "office": "Helsinki",
+    "nationality": "Finnish",
+    "rotation": "Normal",
+    "rotationDescription": "Standard 5-day work week",
+    "dream": "To build scalable microservices",
+    "githubHandle": "jsmith",
+    "slackHandle": "@jane.smith",
+    "linkedinHandle": "janesmith",
+    "twitterHandle": "jane_dev",
+    "stackOverflowHandle": "jsmith",
+    "startDate": "2019-06-01",
+    "endDate": null,
+    "birthDate": "1992-08-15",
+    "disabled": false,
+    "segment": "EMPLOYEE",
+    "loginType": "SSO",
+    "useFlexHours": true,
+    "createdAt": "2019-05-01T10:00:00Z",
+    "updatedAt": "2025-12-10T14:30:00Z",
+    "seniorityId": "senior-001",
+    "businessUnitId": "bu-tech-001",
+    "companyId": "rakettitiede-001",
+    "primaryTeamId": "team-backend-001",
+    "supervisorId": "super-001",
+    "address": "addr-002",
+    "regionId": "region-helsinki-001",
+    "userName": "jane.smith",
+    "accessRoles": [
+      {
+        "role": "employee"
+      },
+      {
+        "role": "consultant"
+      }
+    ],
+    "roles": [
+      {
+        "id": "role-002",
+        "name": "Backend Developer"
+      }
+    ],
+    "teams": [
+      {
+        "id": "team-backend-001",
+        "name": "Backend Team"
+      }
+    ],
+    "skills": [
+      {
+        "id": "skill-java-001",
+        "proficiency": 5,
+        "motivation": 5,
+        "name": "Java",
+        "category": "Programming Language",
+        "externalId": "SKILL-JAVA",
+        "isCoreSkill": true,
+        "visibleInCv": true,
+        "experience": "6 years",
+        "updatedAt": "2025-11-15T10:00:00Z",
+        "createdAt": "2019-06-01T10:00:00Z"
+      },
+      {
+        "id": "skill-spring-001",
+        "proficiency": 5,
+        "motivation": 5,
+        "name": "Spring Boot",
+        "category": "Framework",
+        "externalId": "SKILL-SPRING",
+        "isCoreSkill": true,
+        "visibleInCv": true,
+        "experience": "5 years",
+        "updatedAt": "2025-11-15T10:00:00Z",
+        "createdAt": "2020-01-15T10:00:00Z"
+      }
+    ],
+    "certificates": [],
+    "experiences": [],
+    "employeeCosts": [
+      {
+        "id": "cost-002",
+        "employeeId": "b2c3d4e5-2345-6789-0bcd-ef0123456789",
+        "hourlyCost": 70,
+        "currency": "EUR",
+        "startDate": "2025-01-01"
+      }
+    ],
+    "labels": []
+  },
+  {
+    "id": "c3d4e5f6-3456-7890-1cde-f01234567890",
+    "externalId": "EMP003",
+    "name": "Alice Cooper",
+    "firstName": "Alice",
+    "lastName": "Cooper",
+    "description": "DevOps engineer with expertise in cloud infrastructure and CI/CD.",
+    "externalDescription": "Experienced DevOps engineer specializing in cloud infrastructure, Kubernetes, and CI/CD pipelines.",
+    "title": "Senior DevOps Engineer",
+    "salutation": "Ms.",
+    "email": "alice.cooper@example.com",
+    "phone": "+358401234569",
+    "avatar": "https://i.pravatar.cc/150?u=alice.cooper",
+    "avatarFileId": "avatar-003",
+    "office": "Helsinki",
+    "nationality": "Finnish",
+    "rotation": "Normal",
+    "rotationDescription": "Standard 5-day work week",
+    "dream": "To automate everything",
+    "githubHandle": "acooper",
+    "slackHandle": "@alice.cooper",
+    "linkedinHandle": "alicecooper",
+    "twitterHandle": "alice_devops",
+    "stackOverflowHandle": "acooper",
+    "startDate": "2021-03-01",
+    "endDate": null,
+    "birthDate": "1991-11-20",
+    "disabled": false,
+    "segment": "EMPLOYEE",
+    "loginType": "SSO",
+    "useFlexHours": true,
+    "createdAt": "2021-02-01T10:00:00Z",
+    "updatedAt": "2025-12-10T14:30:00Z",
+    "seniorityId": "senior-001",
+    "businessUnitId": "bu-tech-001",
+    "companyId": "rakettitiede-001",
+    "primaryTeamId": "team-devops-001",
+    "supervisorId": "super-001",
+    "address": "addr-003",
+    "regionId": "region-helsinki-001",
+    "userName": "alice.cooper",
+    "accessRoles": [
+      {
+        "role": "employee"
+      },
+      {
+        "role": "consultant"
+      }
+    ],
+    "roles": [
+      {
+        "id": "role-003",
+        "name": "DevOps Engineer"
+      }
+    ],
+    "teams": [
+      {
+        "id": "team-devops-001",
+        "name": "DevOps Team"
+      }
+    ],
+    "skills": [
+      {
+        "id": "skill-kubernetes-001",
+        "proficiency": 4,
+        "motivation": 5,
+        "name": "Kubernetes",
+        "category": "DevOps",
+        "externalId": "SKILL-K8S",
+        "isCoreSkill": true,
+        "visibleInCv": true,
+        "experience": "3 years",
+        "updatedAt": "2025-11-15T10:00:00Z",
+        "createdAt": "2022-01-15T10:00:00Z"
+      },
+      {
+        "id": "skill-docker-001",
+        "proficiency": 5,
+        "motivation": 5,
+        "name": "Docker",
+        "category": "DevOps",
+        "externalId": "SKILL-DOCKER",
+        "isCoreSkill": true,
+        "visibleInCv": true,
+        "experience": "4 years",
+        "updatedAt": "2025-11-15T10:00:00Z",
+        "createdAt": "2021-03-01T10:00:00Z"
+      }
+    ],
+    "certificates": [],
+    "experiences": [],
+    "employeeCosts": [
+      {
+        "id": "cost-003",
+        "employeeId": "c3d4e5f6-3456-7890-1cde-f01234567890",
+        "hourlyCost": 75,
+        "currency": "EUR",
+        "startDate": "2025-01-01"
+      }
+    ],
+    "labels": []
+  },
+  {
+    "id": "d4e5f6g7-4567-8901-2def-012345678901",
+    "externalId": "EMP004",
+    "name": "Bob Johnson",
+    "firstName": "Bob",
+    "lastName": "Johnson",
+    "description": "Fullstack developer with expertise in React and Node.js.",
+    "externalDescription": "Experienced fullstack developer specializing in React, Node.js, and modern web technologies.",
+    "title": "Senior Fullstack Developer",
+    "salutation": "Mr.",
+    "email": "bob.johnson@example.com",
+    "phone": "+358401234570",
+    "avatar": "https://i.pravatar.cc/150?u=bob.johnson",
+    "avatarFileId": "avatar-004",
+    "office": "Helsinki",
+    "nationality": "Finnish",
+    "rotation": "Normal",
+    "rotationDescription": "Standard 5-day work week",
+    "dream": "To build amazing user experiences",
+    "githubHandle": "bjohnson",
+    "slackHandle": "@bob.johnson",
+    "linkedinHandle": "bobjohnson",
+    "twitterHandle": "bob_dev",
+    "stackOverflowHandle": "bjohnson",
+    "startDate": "2020-09-01",
+    "endDate": null,
+    "birthDate": "1989-04-10",
+    "disabled": false,
+    "segment": "EMPLOYEE",
+    "loginType": "SSO",
+    "useFlexHours": true,
+    "createdAt": "2020-08-01T10:00:00Z",
+    "updatedAt": "2025-12-10T14:30:00Z",
+    "seniorityId": "senior-001",
+    "businessUnitId": "bu-tech-001",
+    "companyId": "rakettitiede-001",
+    "primaryTeamId": "team-fullstack-001",
+    "supervisorId": "super-001",
+    "address": "addr-004",
+    "regionId": "region-helsinki-001",
+    "userName": "bob.johnson",
+    "accessRoles": [
+      {
+        "role": "employee"
+      },
+      {
+        "role": "consultant"
+      }
+    ],
+    "roles": [
+      {
+        "id": "role-004",
+        "name": "Fullstack Developer"
+      }
+    ],
+    "teams": [
+      {
+        "id": "team-fullstack-001",
+        "name": "Fullstack Team"
+      }
+    ],
+    "skills": [
+      {
+        "id": "skill-react-002",
+        "proficiency": 5,
+        "motivation": 5,
+        "name": "React",
+        "category": "Frontend",
+        "externalId": "SKILL-REACT-2",
+        "isCoreSkill": true,
+        "visibleInCv": true,
+        "experience": "5 years",
+        "updatedAt": "2025-11-15T10:00:00Z",
+        "createdAt": "2020-09-01T10:00:00Z"
+      },
+      {
+        "id": "skill-node-002",
+        "proficiency": 4,
+        "motivation": 4,
+        "name": "Node.js",
+        "category": "Backend",
+        "externalId": "SKILL-NODE-2",
+        "isCoreSkill": true,
+        "visibleInCv": true,
+        "experience": "4 years",
+        "updatedAt": "2025-11-15T10:00:00Z",
+        "createdAt": "2020-09-01T10:00:00Z"
+      }
+    ],
+    "certificates": [],
+    "experiences": [],
+    "employeeCosts": [
+      {
+        "id": "cost-004",
+        "employeeId": "d4e5f6g7-4567-8901-2def-012345678901",
+        "hourlyCost": 68,
+        "currency": "EUR",
+        "startDate": "2025-01-01"
+      }
+    ],
+    "labels": []
+  },
+  {
+    "id": "e5f6g7h8-5678-9012-3ef0-123456789012",
+    "externalId": "EMP005",
+    "name": "Charlie Brown",
+    "firstName": "Charlie",
+    "lastName": "Brown",
+    "description": "Backend developer with expertise in Python and Django.",
+    "externalDescription": "Experienced backend developer specializing in Python, Django, and RESTful APIs.",
+    "title": "Senior Backend Developer",
+    "salutation": "Mr.",
+    "email": "charlie.brown@example.com",
+    "phone": "+358401234571",
+    "avatar": "https://i.pravatar.cc/150?u=charlie.brown",
+    "avatarFileId": "avatar-005",
+    "office": "Helsinki",
+    "nationality": "Finnish",
+    "rotation": "Normal",
+    "rotationDescription": "Standard 5-day work week",
+    "dream": "To build robust APIs",
+    "githubHandle": "cbrown",
+    "slackHandle": "@charlie.brown",
+    "linkedinHandle": "charliebrown",
+    "twitterHandle": "charlie_dev",
+    "stackOverflowHandle": "cbrown",
+    "startDate": "2018-01-15",
+    "endDate": null,
+    "birthDate": "1993-07-25",
+    "disabled": false,
+    "segment": "EMPLOYEE",
+    "loginType": "SSO",
+    "useFlexHours": true,
+    "createdAt": "2017-12-01T10:00:00Z",
+    "updatedAt": "2025-12-10T14:30:00Z",
+    "seniorityId": "senior-001",
+    "businessUnitId": "bu-tech-001",
+    "companyId": "rakettitiede-001",
+    "primaryTeamId": "team-backend-001",
+    "supervisorId": "super-001",
+    "address": "addr-005",
+    "regionId": "region-helsinki-001",
+    "userName": "charlie.brown",
+    "accessRoles": [
+      {
+        "role": "employee"
+      },
+      {
+        "role": "consultant"
+      }
+    ],
+    "roles": [
+      {
+        "id": "role-005",
+        "name": "Backend Developer"
+      }
+    ],
+    "teams": [
+      {
+        "id": "team-backend-001",
+        "name": "Backend Team"
+      }
+    ],
+    "skills": [
+      {
+        "id": "skill-python-001",
+        "proficiency": 5,
+        "motivation": 5,
+        "name": "Python",
+        "category": "Programming Language",
+        "externalId": "SKILL-PYTHON",
+        "isCoreSkill": true,
+        "visibleInCv": true,
+        "experience": "7 years",
+        "updatedAt": "2025-11-15T10:00:00Z",
+        "createdAt": "2018-01-15T10:00:00Z"
+      },
+      {
+        "id": "skill-django-001",
+        "proficiency": 5,
+        "motivation": 5,
+        "name": "Django",
+        "category": "Framework",
+        "externalId": "SKILL-DJANGO",
+        "isCoreSkill": true,
+        "visibleInCv": true,
+        "experience": "6 years",
+        "updatedAt": "2025-11-15T10:00:00Z",
+        "createdAt": "2019-01-15T10:00:00Z"
+      }
+    ],
+    "certificates": [],
+    "experiences": [],
+    "employeeCosts": [
+      {
+        "id": "cost-005",
+        "employeeId": "e5f6g7h8-5678-9012-3ef0-123456789012",
+        "hourlyCost": 72,
+        "currency": "EUR",
+        "startDate": "2025-01-01"
+      }
+    ],
+    "labels": []
+  }
+]

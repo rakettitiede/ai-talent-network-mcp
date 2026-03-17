@@ -1,0 +1,20 @@
+[
+  {
+    "id": "proj-001",
+    "externalId": "PROJ-2024-NORDEA",
+    "employeeId": "a1b2c3d4-1234-5678-9abc-def012345678",
+    "description": "Developed a modern customer portal for Nordea's corporate banking services. Built real-time transaction monitoring, payment workflows, and account management features using React and GraphQL.",
+    "title": "Nordea Corporate Banking Portal",
+    "company": "Nordea Bank",
+    "startDate": "2024-02-01",
+    "endDate": "2025-11-30",
+    "visibleInCv": true,
+    "confidential": false,
+    "challenge": "Legacy system with poor UX and limited real-time capabilities. Needed to build a modern, secure portal while maintaining backwards compatibility with existing banking systems.",
+    "contribution": "Lead frontend developer responsible for React architecture, GraphQL integration, and implementing secure authentication flows. Collaborated closely with Nordea's security team to meet banking regulations.",
+    "employer": "Rakettitiede Oy",
+    "result": "Delivered a responsive portal used by 5000+ corporate clients. Achieved 95% user satisfaction score and reduced common task completion time by 40%. Zero security incidents during deployment.",
+    "skills": "React, TypeScript, GraphQL, Node.js, PostgreSQL, OAuth2, Jest, Cypress",
+    "role": "Lead Frontend Developer"
+  }
+]

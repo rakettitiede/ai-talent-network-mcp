@@ -1,0 +1,102 @@
+=== Fixture Verification Log ===
+Generated: 2026-01-07T09:24:09.117Z
+
+
+[2026-01-07T09:24:09.891Z] Verifying fixture: 6a4bf16d2293ee20.json
+  Text: "test@#$%^&*()"
+  Original embedding length: 1536
+  Saved embedding length: 1536
+  ✅ PASS: Embedding length matches (1536)
+  ✅ PASS: All 1536 elements match exactly
+  ✅ PASS: Float32Array conversion verified (1536 elements)
+  ✅ Overall verification: PASSED
+
+[2026-01-07T09:24:11.114Z] Verifying fixture: 41edece42d63e8d9.json
+  Text: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa..."
+  Original embedding length: 1536
+  Saved embedding length: 1536
+  ✅ PASS: Embedding length matches (1536)
+  ✅ PASS: All 1536 elements match exactly
+  ✅ PASS: Float32Array conversion verified (1536 elements)
+  ✅ Overall verification: PASSED
+
+[2026-01-07T09:24:11.987Z] Verifying fixture: 612f590a8d55dbc3.json
+  Text: "matti virtanen"
+  Original embedding length: 1536
+  Saved embedding length: 1536
+  ✅ PASS: Embedding length matches (1536)
+  ✅ PASS: All 1536 elements match exactly
+  ✅ PASS: Float32Array conversion verified (1536 elements)
+  ✅ Overall verification: PASSED
+
+[2026-01-07T09:24:13.896Z] Verifying fixture: 143f9340fd5f2675.json
+  Text: "javascript developer"
+  Original embedding length: 1536
+  Saved embedding length: 1536
+  ✅ PASS: Embedding length matches (1536)
+  ✅ PASS: All 1536 elements match exactly
+  ✅ PASS: Float32Array conversion verified (1536 elements)
+  ✅ Overall verification: PASSED
+
+[2026-01-07T09:24:14.545Z] Verifying fixture: 275976081ce1abf6.json
+  Text: "react"
+  Original embedding length: 1536
+  Saved embedding length: 1536
+  ✅ PASS: Embedding length matches (1536)
+  ✅ PASS: All 1536 elements match exactly
+  ✅ PASS: Float32Array conversion verified (1536 elements)
+  ✅ Overall verification: PASSED
+
+[2026-01-07T09:24:15.456Z] Verifying fixture: 486ead622ae05a17.json
+  Text: "undefined null"
+  Original embedding length: 1536
+  Saved embedding length: 1536
+  ✅ PASS: Embedding length matches (1536)
+  ✅ PASS: All 1536 elements match exactly
+  ✅ PASS: Float32Array conversion verified (1536 elements)
+  ✅ Overall verification: PASSED
+
+[2026-01-07T09:24:17.847Z] Verifying fixture: 9f86d081884c7d65.json
+  Text: "test"
+  Original embedding length: 1536
+  Saved embedding length: 1536
+  ✅ PASS: Embedding length matches (1536)
+  ✅ PASS: All 1536 elements match exactly
+  ✅ PASS: Float32Array conversion verified (1536 elements)
+  ✅ Overall verification: PASSED
+
+[2026-01-07T09:24:19.346Z] Verifying fixture: 38a0963a6364b09a.json
+  Text: "java"
+  Original embedding length: 1536
+  Saved embedding length: 1536
+  ✅ PASS: Embedding length matches (1536)
+  ✅ PASS: All 1536 elements match exactly
+  ✅ PASS: Float32Array conversion verified (1536 elements)
+  ✅ Overall verification: PASSED
+
+[2026-01-07T09:24:19.926Z] Verifying fixture: 94abcb2d2773df65.json
+  Text: "kubernetes"
+  Original embedding length: 1536
+  Saved embedding length: 1536
+  ✅ PASS: Embedding length matches (1536)
+  ✅ PASS: All 1536 elements match exactly
+  ✅ PASS: Float32Array conversion verified (1536 elements)
+  ✅ Overall verification: PASSED
+
+[2026-01-07T09:24:21.060Z] Verifying fixture: 11a4a60b518bf249.json
+  Text: "python"
+  Original embedding length: 1536
+  Saved embedding length: 1536
+  ✅ PASS: Embedding length matches (1536)
+  ✅ PASS: All 1536 elements match exactly
+  ✅ PASS: Float32Array conversion verified (1536 elements)
+  ✅ Overall verification: PASSED
+
+[2026-01-07T09:24:22.161Z] Verifying fixture: d15007872f57a894.json
+  Text: "matti virtanen react"
+  Original embedding length: 1536
+  Saved embedding length: 1536
+  ✅ PASS: Embedding length matches (1536)
+  ✅ PASS: All 1536 elements match exactly
+  ✅ PASS: Float32Array conversion verified (1536 elements)
+  ✅ Overall verification: PASSED

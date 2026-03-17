@@ -1,0 +1,44 @@
+{
+  "name": "ai-talent-network-mcp",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "MCP Server for talent network",
+  "main": "src/index.mjs",
+  "scripts": {
+    "start": "npm run check-node && node src/index.mjs",
+    "dev": "npm run check-node && node --watch src/index.mjs",
+    "pretest": "npm run check-node && npm run check-fixtures",
+    "test": "node --test --test-global-setup=test/global-setup.mjs --no-warnings test/integration/*.test.mjs",
+    "check-node": "node scripts/check-node-version.mjs",
+    "check-fixtures": "node scripts/check-search-fixtures.mjs",
+    "migrate": "npm run check-node && node scripts/migrate.mjs"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.2.0",
+    "@google-cloud/storage": "^7.17.2",
+    "@modelcontextprotocol/sdk": "^1.17.5",
+    "better-sqlite3": "^12.2.0",
+    "express": "^5.1.0",
+    "fastify": "^5.1.0",
+    "npm": "^11.6.2",
+    "openai": "^6.7.0",
+    "sqlite-vec": "^0.1.7-alpha.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "zod": "^4.1.12"
+  },
+  "engines": {
+    "node": ">=24.12.0"
+  },
+  "keywords": [
+    "mcp",
+    "api",
+    "server",
+    "talent-network"
+  ],
+  "author": {
+    "name": "Rakettitiede"
+  },
+  "license": "MIT",
+  "packageManager": "pnpm@9.6.0+sha512.38dc6fba8dba35b39340b9700112c2fe1e12f10b17134715a4aa98ccf7bb035e76fd981cf0bb384dfa98f8d6af5481c2bef2f4266a24bfa20c34eb7147ce0b5e"
+}

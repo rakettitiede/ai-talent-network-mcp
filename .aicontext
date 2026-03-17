@@ -1,0 +1,131 @@
+# AI Assistant Context
+
+> This file provides context for AI coding assistants (Claude, Cursor, Copilot, etc.)
+
+## Critical Workflow Rules
+
+**NEVER do these actions without explicit user permission:**
+- ❌ `git commit` — Always ask before committing
+- ❌ `git push` — Always ask before pushing
+- ❌ Creating pull requests — Always ask first
+- ❌ Merging branches — Always ask first
+- ❌ Deployment commands — Always ask before deploying
+
+**You CAN do without asking:**
+- ✅ `git status`, `git diff`, `git log` (read-only git commands)
+- ✅ Creating/modifying files
+- ✅ Running tests
+- ✅ Installing dependencies locally
+
+---
+
+## Project Overview
+
+**ai-talent-network-mcp** is an MCP (Model Context Protocol) server providing privacy-first consultant talent search. It is a pilot node for Rakettitiede in a future federated talent network across partner companies.
+
+**Key design principle:** No personal information is stored, processed, or returned — ever. The database contains only anonymized consultant data: new UUIDs (not Agileday IDs), anonymized profile descriptions, skills, project history, and availability. No names, emails, or any other PII.
+
+**Use case:** Searching for consultants by skill or description returns matching "Candidate" entries with skills, availability, and project history — but never a name or identity.
+
+## Architecture
+
+```
+Custom GPT / MCP Client
+        │
+        ▼
+ai-talent-network-mcp (Cloud Run)
+  ├── MCP tools: search, fetch
+  ├── REST API: /api/v1/search, /api/v1/fetch
+  ├── OAuth proxy for Custom GPT
+  └── SQLite + sqlite-vec (anonymous data only)
+        │
+        ▼
+  GCS bucket (database storage)
+```
+
+Data is loaded into the database via an offline import script (not via the server). The server is read-only with respect to data.
+
+## Core Components
+
+- `src/index.mjs` — Express entry point, SSE transport, OAuth, Swagger
+- `src/mcp-server.mjs` — MCP tools: search, fetch
+- `src/database.mjs` — SQLite search functions (no PII, no external API calls)
+- `src/do-search.mjs` — Combines semantic, skill, and project search strategies
+- `src/do-fetch.mjs` — Returns anonymized candidate/project details by ID
+- `src/results-map.mjs` — Deduplicates and merges results across strategies
+- `src/api-router-v1.mjs` — REST API: /search, /fetch
+- `src/require-auth.mjs` — API key + OAuth Bearer token auth
+- `src/oauth-router.mjs` — OAuth proxy for Custom GPT integration
+- `src/embeddings.mjs` — OpenAI text-embedding-3-small (1536 dims)
+- `src/storage.mjs` — GCS database download/upload
+- `src/constants.mjs` — All env vars and configuration
+
+## Database Schema (anonymous)
+
+- `employees` — id (new UUID), description (anonymized)
+- `employee_skills` — skills with proficiency and motivation ratings
+- `employee_certificates` — certifications
+- `project_history` — past projects (descriptions only, no client names)
+- `openings` — availability date ranges
+- `employee_availability` — computed view: Available now / Available after DATE
+- `vec_employees` / `vec_projects` — vector tables for semantic search
+
+## Search Strategies
+
+Three parallel strategies, deduplicated via ResultsMap:
+1. **Semantic profile search** — vector similarity on consultant descriptions (≤0.5 distance, top 10)
+2. **Skill search** — tokenized query matched against employee_skills
+3. **Project search** — vector similarity on project history descriptions
+
+## Common Commands
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Run tests
+npm test
+
+# Check Node version
+npm run check-node
+```
+
+Requires **Node.js v24.12.0** (enforced by version checker on all scripts).
+
+## Deployment
+
+Tag a version to trigger CI/CD:
+```bash
+npm version patch -m "fix: description"
+git push && git push --tags
+```
+
+Never run `git push` via AI assistant — requires YubiKey hardware authentication.
+
+## Documentation Structure
+
+```
+README.md                    # Overview and links only
+CONTRIBUTING.md              # Contribution guidelines and code style
+docs/
+├── architecture/adr/        # Architecture Decision Records
+├── deployment/              # local.md, gcp.md, database.md
+└── integrations/            # custom-gpt.md
+```
+
+New docs go in `docs/`. ADRs for all significant architecture decisions.
+
+## Environment Variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `API_KEY` | Yes | API authentication key |
+| `OPENAI_KEY` | Yes | OpenAI API key for embeddings |
+| `GCS_BUCKET` | Production | GCS bucket for database |
+| `GOOGLE_CLIENT_ID` | OAuth | Google OAuth client ID |
+| `GOOGLE_CLIENT_SECRET` | OAuth | Google OAuth client secret |
+| `NODE_ENV` | No | development (default) or production |
+| `PORT` | No | Server port (default 8080) |

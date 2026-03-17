@@ -1,0 +1,667 @@
+[
+  {
+    "id": "opening-2026-nordea",
+    "description": "Nordea is expanding their digital banking platform and needs an experienced React/GraphQL developer to build new investment and wealth management features. This is a continuation of the successful corporate banking portal project, now focusing on retail investment services. The role requires strong financial domain knowledge and experience with real-time data visualization.",
+    "subcontractorVisibility": "VISIBLE",
+    "billable": true,
+    "probability": 85,
+    "language": "Finnish/English",
+    "workType": "Hybrid",
+    "startDate": "2027-01-15",
+    "endDate": "2027-12-31",
+    "roleId": "role-react-senior-001",
+    "projectlikeId": "project-nordea-investments-001",
+    "createdAt": "2025-12-01T09:00:00Z",
+    "updatedAt": "2025-12-15T11:30:00Z",
+    "projectlikeName": "Nordea Investment Platform Phase 2",
+    "projectlikeType": "EXTERNAL",
+    "roleName": "Senior React Developer",
+    "externalId": "OPEN-2026-NORDEA",
+    "status": "OPEN",
+    "allocationMode": "PERCENTAGE",
+    "allocations": [
+      {
+        "id": "alloc-001",
+        "allocation": 100,
+        "startDate": "2027-01-15",
+        "hours": 160
+      }
+    ],
+    "interested": [
+      {
+        "id": "a1b2c3d4-1234-5678-9abc-def012345678",
+        "email": "matti.virtanen@example.com",
+        "name": "Matti Virtanen"
+      }
+    ],
+    "labels": [
+      {
+        "id": "label-banking-001",
+        "name": "Banking",
+        "description": "Financial services sector",
+        "category": "Industry",
+        "color": "BLUE",
+        "labelType": "global"
+      },
+      {
+        "id": "label-continuation-001",
+        "name": "Project Continuation",
+        "description": "Follow-up to previous engagement",
+        "category": "Project Type",
+        "color": "GREEN",
+        "labelType": "global"
+      }
+    ],
+    "speculatees": [
+      {
+        "id": "a1b2c3d4-1234-5678-9abc-def012345678",
+        "email": "matti.virtanen@example.com",
+        "name": "Matti Virtanen",
+        "stage": "PROPOSED",
+        "buyRate": 65,
+        "sellRate": 95
+      }
+    ],
+    "contractees": [
+      {
+        "id": "a1b2c3d4-1234-5678-9abc-def012345678",
+        "email": "matti.virtanen@example.com",
+        "name": "Matti Virtanen"
+      }
+    ],
+    "skills": [
+      {
+        "id": "skill-react-001",
+        "proficiency": 5,
+        "name": "React"
+      },
+      {
+        "id": "skill-typescript-001",
+        "proficiency": 5,
+        "name": "TypeScript"
+      },
+      {
+        "id": "skill-graphql-001",
+        "proficiency": 4,
+        "name": "GraphQL"
+      },
+      {
+        "id": "skill-postgres-001",
+        "proficiency": 3,
+        "name": "PostgreSQL"
+      }
+    ],
+    "duration": {
+      "startDate": "2027-01-15",
+      "endDate": "2027-12-31"
+    },
+    "openingPrices": [
+      {
+        "id": "price-001",
+        "price": 95,
+        "startDate": "2027-01-15",
+        "currencyCode": "EUR"
+      }
+    ],
+    "openingVisibleForCompanies": [
+      {
+        "id": "rakettitiede-001",
+        "name": "Rakettitiede Oy"
+      }
+    ],
+    "seniority": {
+      "id": "senior-001",
+      "name": "Senior"
+    },
+    "region": {
+      "id": "region-helsinki-001",
+      "name": "Helsinki"
+    },
+    "staffingManager": {
+      "id": "manager-001",
+      "email": "laura.korhonen@rakettitiede.fi",
+      "name": "Laura Korhonen"
+    },
+    "staffingTeam": [
+      {
+        "id": "manager-001",
+        "email": "laura.korhonen@rakettitiede.fi",
+        "name": "Laura Korhonen"
+      }
+    ]
+  },
+  {
+    "id": "opening-current-single",
+    "description": "Building a new microservices platform for a financial services client.",
+    "subcontractorVisibility": "VISIBLE",
+    "billable": true,
+    "probability": 100,
+    "language": "English",
+    "workType": "Remote",
+    "startDate": "2024-01-01",
+    "endDate": "2026-12-31",
+    "roleId": "role-backend-001",
+    "projectlikeId": "project-microservices-001",
+    "createdAt": "2023-12-01T09:00:00Z",
+    "updatedAt": "2024-01-01T11:00:00Z",
+    "projectlikeName": "Microservices Platform",
+    "projectlikeType": "EXTERNAL",
+    "roleName": "Senior Backend Developer",
+    "externalId": "OPEN-CURRENT-SINGLE",
+    "status": "OPEN",
+    "allocationMode": "PERCENTAGE",
+    "allocations": [
+      {
+        "id": "alloc-002",
+        "allocation": 100,
+        "startDate": "2024-01-01",
+        "hours": 160
+      }
+    ],
+    "interested": [],
+    "labels": [],
+    "speculatees": [],
+    "contractees": [
+      {
+        "id": "b2c3d4e5-2345-6789-0bcd-ef0123456789",
+        "email": "jane.smith@example.com",
+        "name": "Jane Smith"
+      }
+    ],
+    "skills": [
+      {
+        "id": "skill-java-001",
+        "proficiency": 5,
+        "name": "Java"
+      },
+      {
+        "id": "skill-spring-001",
+        "proficiency": 5,
+        "name": "Spring Boot"
+      }
+    ],
+    "duration": {
+      "startDate": "2024-01-01",
+      "endDate": "2026-12-31"
+    },
+    "openingPrices": [
+      {
+        "id": "price-002",
+        "price": 90,
+        "startDate": "2024-01-01",
+        "currencyCode": "EUR"
+      }
+    ],
+    "openingVisibleForCompanies": [
+      {
+        "id": "rakettitiede-001",
+        "name": "Rakettitiede Oy"
+      }
+    ],
+    "seniority": {
+      "id": "senior-001",
+      "name": "Senior"
+    },
+    "region": {
+      "id": "region-helsinki-001",
+      "name": "Helsinki"
+    },
+    "staffingManager": {
+      "id": "manager-001",
+      "email": "laura.korhonen@rakettitiede.fi",
+      "name": "Laura Korhonen"
+    },
+    "staffingTeam": [
+      {
+        "id": "manager-001",
+        "email": "laura.korhonen@rakettitiede.fi",
+        "name": "Laura Korhonen"
+      }
+    ]
+  },
+  {
+    "id": "opening-current-multiple-1",
+    "description": "DevOps infrastructure project for cloud migration.",
+    "subcontractorVisibility": "VISIBLE",
+    "billable": true,
+    "probability": 100,
+    "language": "English",
+    "workType": "Hybrid",
+    "startDate": "2024-03-01",
+    "endDate": "2026-12-31",
+    "roleId": "role-devops-001",
+    "projectlikeId": "project-devops-001",
+    "createdAt": "2024-02-01T09:00:00Z",
+    "updatedAt": "2024-03-01T11:00:00Z",
+    "projectlikeName": "Cloud Migration Project",
+    "projectlikeType": "EXTERNAL",
+    "roleName": "Senior DevOps Engineer",
+    "externalId": "OPEN-CURRENT-MULTIPLE-1",
+    "status": "OPEN",
+    "allocationMode": "PERCENTAGE",
+    "allocations": [
+      {
+        "id": "alloc-003",
+        "allocation": 50,
+        "startDate": "2024-03-01",
+        "hours": 80
+      }
+    ],
+    "interested": [],
+    "labels": [],
+    "speculatees": [],
+    "contractees": [
+      {
+        "id": "c3d4e5f6-3456-7890-1cde-f01234567890",
+        "email": "alice.cooper@example.com",
+        "name": "Alice Cooper"
+      }
+    ],
+    "skills": [
+      {
+        "id": "skill-kubernetes-001",
+        "proficiency": 4,
+        "name": "Kubernetes"
+      },
+      {
+        "id": "skill-docker-001",
+        "proficiency": 5,
+        "name": "Docker"
+      }
+    ],
+    "duration": {
+      "startDate": "2024-03-01",
+      "endDate": "2026-12-31"
+    },
+    "openingPrices": [
+      {
+        "id": "price-003",
+        "price": 95,
+        "startDate": "2024-03-01",
+        "currencyCode": "EUR"
+      }
+    ],
+    "openingVisibleForCompanies": [
+      {
+        "id": "rakettitiede-001",
+        "name": "Rakettitiede Oy"
+      }
+    ],
+    "seniority": {
+      "id": "senior-001",
+      "name": "Senior"
+    },
+    "region": {
+      "id": "region-helsinki-001",
+      "name": "Helsinki"
+    },
+    "staffingManager": {
+      "id": "manager-001",
+      "email": "laura.korhonen@rakettitiede.fi",
+      "name": "Laura Korhonen"
+    },
+    "staffingTeam": [
+      {
+        "id": "manager-001",
+        "email": "laura.korhonen@rakettitiede.fi",
+        "name": "Laura Korhonen"
+      }
+    ]
+  },
+  {
+    "id": "opening-current-multiple-2",
+    "description": "CI/CD pipeline optimization project.",
+    "subcontractorVisibility": "VISIBLE",
+    "billable": true,
+    "probability": 100,
+    "language": "English",
+    "workType": "Remote",
+    "startDate": "2024-06-01",
+    "endDate": "2025-12-31",
+    "roleId": "role-devops-002",
+    "projectlikeId": "project-cicd-001",
+    "createdAt": "2024-05-01T09:00:00Z",
+    "updatedAt": "2024-06-01T11:00:00Z",
+    "projectlikeName": "CI/CD Pipeline Optimization",
+    "projectlikeType": "EXTERNAL",
+    "roleName": "Senior DevOps Engineer",
+    "externalId": "OPEN-CURRENT-MULTIPLE-2",
+    "status": "OPEN",
+    "allocationMode": "PERCENTAGE",
+    "allocations": [
+      {
+        "id": "alloc-004",
+        "allocation": 50,
+        "startDate": "2024-06-01",
+        "hours": 80
+      }
+    ],
+    "interested": [],
+    "labels": [],
+    "speculatees": [],
+    "contractees": [
+      {
+        "id": "c3d4e5f6-3456-7890-1cde-f01234567890",
+        "email": "alice.cooper@example.com",
+        "name": "Alice Cooper"
+      }
+    ],
+    "skills": [
+      {
+        "id": "skill-kubernetes-001",
+        "proficiency": 4,
+        "name": "Kubernetes"
+      },
+      {
+        "id": "skill-docker-001",
+        "proficiency": 5,
+        "name": "Docker"
+      }
+    ],
+    "duration": {
+      "startDate": "2024-06-01",
+      "endDate": "2025-12-31"
+    },
+    "openingPrices": [
+      {
+        "id": "price-004",
+        "price": 95,
+        "startDate": "2024-06-01",
+        "currencyCode": "EUR"
+      }
+    ],
+    "openingVisibleForCompanies": [
+      {
+        "id": "rakettitiede-001",
+        "name": "Rakettitiede Oy"
+      }
+    ],
+    "seniority": {
+      "id": "senior-001",
+      "name": "Senior"
+    },
+    "region": {
+      "id": "region-helsinki-001",
+      "name": "Helsinki"
+    },
+    "staffingManager": {
+      "id": "manager-001",
+      "email": "laura.korhonen@rakettitiede.fi",
+      "name": "Laura Korhonen"
+    },
+    "staffingTeam": [
+      {
+        "id": "manager-001",
+        "email": "laura.korhonen@rakettitiede.fi",
+        "name": "Laura Korhonen"
+      }
+    ]
+  },
+  {
+    "id": "opening-ongoing-single",
+    "description": "Long-term maintenance and support project for a client platform.",
+    "subcontractorVisibility": "VISIBLE",
+    "billable": true,
+    "probability": 100,
+    "language": "English",
+    "workType": "Hybrid",
+    "startDate": "2023-06-01",
+    "endDate": null,
+    "roleId": "role-fullstack-001",
+    "projectlikeId": "project-maintenance-001",
+    "createdAt": "2023-05-01T09:00:00Z",
+    "updatedAt": "2023-06-01T11:00:00Z",
+    "projectlikeName": "Platform Maintenance",
+    "projectlikeType": "EXTERNAL",
+    "roleName": "Senior Fullstack Developer",
+    "externalId": "OPEN-ONGOING-SINGLE",
+    "status": "OPEN",
+    "allocationMode": "PERCENTAGE",
+    "allocations": [
+      {
+        "id": "alloc-005",
+        "allocation": 100,
+        "startDate": "2023-06-01",
+        "hours": 160
+      }
+    ],
+    "interested": [],
+    "labels": [],
+    "speculatees": [],
+    "contractees": [
+      {
+        "id": "d4e5f6g7-4567-8901-2def-012345678901",
+        "email": "bob.johnson@example.com",
+        "name": "Bob Johnson"
+      }
+    ],
+    "skills": [
+      {
+        "id": "skill-react-002",
+        "proficiency": 5,
+        "name": "React"
+      },
+      {
+        "id": "skill-node-002",
+        "proficiency": 4,
+        "name": "Node.js"
+      }
+    ],
+    "duration": {
+      "startDate": "2023-06-01",
+      "endDate": null
+    },
+    "openingPrices": [
+      {
+        "id": "price-005",
+        "price": 88,
+        "startDate": "2023-06-01",
+        "currencyCode": "EUR"
+      }
+    ],
+    "openingVisibleForCompanies": [
+      {
+        "id": "rakettitiede-001",
+        "name": "Rakettitiede Oy"
+      }
+    ],
+    "seniority": {
+      "id": "senior-001",
+      "name": "Senior"
+    },
+    "region": {
+      "id": "region-helsinki-001",
+      "name": "Helsinki"
+    },
+    "staffingManager": {
+      "id": "manager-001",
+      "email": "laura.korhonen@rakettitiede.fi",
+      "name": "Laura Korhonen"
+    },
+    "staffingTeam": [
+      {
+        "id": "manager-001",
+        "email": "laura.korhonen@rakettitiede.fi",
+        "name": "Laura Korhonen"
+      }
+    ]
+  },
+  {
+    "id": "opening-ongoing-multiple-1",
+    "description": "Long-term API development and maintenance project.",
+    "subcontractorVisibility": "VISIBLE",
+    "billable": true,
+    "probability": 100,
+    "language": "English",
+    "workType": "Remote",
+    "startDate": "2022-01-01",
+    "endDate": null,
+    "roleId": "role-backend-002",
+    "projectlikeId": "project-api-001",
+    "createdAt": "2021-12-01T09:00:00Z",
+    "updatedAt": "2022-01-01T11:00:00Z",
+    "projectlikeName": "API Development Project",
+    "projectlikeType": "EXTERNAL",
+    "roleName": "Senior Backend Developer",
+    "externalId": "OPEN-ONGOING-MULTIPLE-1",
+    "status": "OPEN",
+    "allocationMode": "PERCENTAGE",
+    "allocations": [
+      {
+        "id": "alloc-006",
+        "allocation": 50,
+        "startDate": "2022-01-01",
+        "hours": 80
+      }
+    ],
+    "interested": [],
+    "labels": [],
+    "speculatees": [],
+    "contractees": [
+      {
+        "id": "e5f6g7h8-5678-9012-3ef0-123456789012",
+        "email": "charlie.brown@example.com",
+        "name": "Charlie Brown"
+      }
+    ],
+    "skills": [
+      {
+        "id": "skill-python-001",
+        "proficiency": 5,
+        "name": "Python"
+      },
+      {
+        "id": "skill-django-001",
+        "proficiency": 5,
+        "name": "Django"
+      }
+    ],
+    "duration": {
+      "startDate": "2022-01-01",
+      "endDate": null
+    },
+    "openingPrices": [
+      {
+        "id": "price-006",
+        "price": 92,
+        "startDate": "2022-01-01",
+        "currencyCode": "EUR"
+      }
+    ],
+    "openingVisibleForCompanies": [
+      {
+        "id": "rakettitiede-001",
+        "name": "Rakettitiede Oy"
+      }
+    ],
+    "seniority": {
+      "id": "senior-001",
+      "name": "Senior"
+    },
+    "region": {
+      "id": "region-helsinki-001",
+      "name": "Helsinki"
+    },
+    "staffingManager": {
+      "id": "manager-001",
+      "email": "laura.korhonen@rakettitiede.fi",
+      "name": "Laura Korhonen"
+    },
+    "staffingTeam": [
+      {
+        "id": "manager-001",
+        "email": "laura.korhonen@rakettitiede.fi",
+        "name": "Laura Korhonen"
+      }
+    ]
+  },
+  {
+    "id": "opening-ongoing-multiple-2",
+    "description": "Long-term data processing and analytics platform.",
+    "subcontractorVisibility": "VISIBLE",
+    "billable": true,
+    "probability": 100,
+    "language": "English",
+    "workType": "Hybrid",
+    "startDate": "2023-03-01",
+    "endDate": null,
+    "roleId": "role-backend-003",
+    "projectlikeId": "project-analytics-001",
+    "createdAt": "2023-02-01T09:00:00Z",
+    "updatedAt": "2023-03-01T11:00:00Z",
+    "projectlikeName": "Analytics Platform",
+    "projectlikeType": "EXTERNAL",
+    "roleName": "Senior Backend Developer",
+    "externalId": "OPEN-ONGOING-MULTIPLE-2",
+    "status": "OPEN",
+    "allocationMode": "PERCENTAGE",
+    "allocations": [
+      {
+        "id": "alloc-007",
+        "allocation": 50,
+        "startDate": "2023-03-01",
+        "hours": 80
+      }
+    ],
+    "interested": [],
+    "labels": [],
+    "speculatees": [],
+    "contractees": [
+      {
+        "id": "e5f6g7h8-5678-9012-3ef0-123456789012",
+        "email": "charlie.brown@example.com",
+        "name": "Charlie Brown"
+      }
+    ],
+    "skills": [
+      {
+        "id": "skill-python-001",
+        "proficiency": 5,
+        "name": "Python"
+      },
+      {
+        "id": "skill-django-001",
+        "proficiency": 5,
+        "name": "Django"
+      }
+    ],
+    "duration": {
+      "startDate": "2023-03-01",
+      "endDate": null
+    },
+    "openingPrices": [
+      {
+        "id": "price-007",
+        "price": 92,
+        "startDate": "2023-03-01",
+        "currencyCode": "EUR"
+      }
+    ],
+    "openingVisibleForCompanies": [
+      {
+        "id": "rakettitiede-001",
+        "name": "Rakettitiede Oy"
+      }
+    ],
+    "seniority": {
+      "id": "senior-001",
+      "name": "Senior"
+    },
+    "region": {
+      "id": "region-helsinki-001",
+      "name": "Helsinki"
+    },
+    "staffingManager": {
+      "id": "manager-001",
+      "email": "laura.korhonen@rakettitiede.fi",
+      "name": "Laura Korhonen"
+    },
+    "staffingTeam": [
+      {
+        "id": "manager-001",
+        "email": "laura.korhonen@rakettitiede.fi",
+        "name": "Laura Korhonen"
+      }
+    ]
+  }
+]

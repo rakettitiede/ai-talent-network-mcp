@@ -1,0 +1,6 @@
+node_modules
+
+# Database files (generated during tests)
+*.sqlite
+
+.github/

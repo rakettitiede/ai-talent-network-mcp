@@ -1,0 +1,130 @@
+[
+  {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "externalId": "PROJ-2024-NORDEA-001",
+    "name": "Nordea Investment Platform Phase 2",
+    "description": "Expanding Nordea's digital banking platform with new investment and wealth management features. Building real-time data visualization and investment tracking capabilities.",
+    "language": "Finnish/English",
+    "segment": "Financial Services",
+    "createdAt": "2024-01-15T10:19:39.918Z",
+    "updatedAt": "2025-12-22T10:19:39.918Z",
+    "offerings": [
+      {
+        "id": "offering-001",
+        "name": "Digital Banking Solutions"
+      },
+      {
+        "id": "offering-002",
+        "name": "Investment Management"
+      }
+    ],
+    "skills": [
+      {
+        "id": "skill-react-001",
+        "name": "React"
+      },
+      {
+        "id": "skill-typescript-001",
+        "name": "TypeScript"
+      },
+      {
+        "id": "skill-graphql-001",
+        "name": "GraphQL"
+      },
+      {
+        "id": "skill-postgres-001",
+        "name": "PostgreSQL"
+      }
+    ],
+    "labels": [
+      {
+        "id": "label-banking-001",
+        "name": "Banking"
+      },
+      {
+        "id": "label-financial-001",
+        "name": "Financial Services"
+      }
+    ],
+    "businessUnit": {
+      "id": "bu-tech-001",
+      "name": "Technology Solutions"
+    },
+    "company": {
+      "id": "rakettitiede-001",
+      "name": "Rakettitiede Oy"
+    },
+    "customer": {
+      "id": "customer-nordea-001",
+      "name": "Nordea Bank",
+      "externalId": "NORDEA-EXT-001",
+      "businessId": "FI12345678",
+      "financialId": "FI98765432"
+    },
+    "endCustomer": {
+      "id": "end-customer-nordea-001",
+      "name": "Nordea Bank",
+      "externalId": "NORDEA-END-001"
+    },
+    "manager": {
+      "id": "manager-001",
+      "name": "Laura Korhonen",
+      "email": "laura.korhonen@rakettitiede.fi"
+    },
+    "assistants": [
+      {
+        "id": "assistant-001",
+        "name": "Matti Virtanen",
+        "email": "matti.virtanen@example.com"
+      }
+    ],
+    "parentTeam": {
+      "id": "team-fullstack-001",
+      "name": "Fullstack Team"
+    },
+    "openings": [
+      {
+        "id": "opening-2026-nordea",
+        "externalId": "OPEN-2026-NORDEA"
+      }
+    ],
+    "projectData": {
+      "createdFromOpportunityId": "opp-001",
+      "referenceState": "ACTIVE",
+      "referenceInternalNotes": "High priority project for Q1 2026. Strong client relationship.",
+      "referenceProjectName": "Nordea Investment Platform Phase 2",
+      "referenceCustomerName": "Nordea Bank",
+      "referenceCustomer": "Nordea Bank - Financial Services",
+      "referenceProject": "Investment Platform Expansion",
+      "referenceChallenge": "Legacy investment systems need modernization with real-time capabilities",
+      "referenceSolution": "Build modern React/GraphQL platform with real-time data feeds",
+      "referenceResult": "Expected to serve 10,000+ retail investment customers",
+      "referenceQuote": "Rakettitiede has been an excellent partner in our digital transformation journey.",
+      "referenceQuoteAuthor": "Nordea CTO",
+      "selfAllocation": false,
+      "cvDescription": "Lead development of investment platform features for major Finnish bank",
+      "confidential": false,
+      "projectStage": "Active Development",
+      "externalIds": {
+        "jira": [
+          "NORDEA-2024-001",
+          "NORDEA-2024-002"
+        ],
+        "salesforce": [
+          "SF-OPP-12345"
+        ],
+        "confluence": [
+          "CONF-123"
+        ]
+      }
+    },
+    "financialData": {
+      "dealSizeCurrency": "EUR",
+      "commercialModel": "TIME_MATERIALS"
+    },
+    "duration": {
+      "startDate": "2026-01-15",
+      "endDate": "2026-12-31"
+    }
+  }
+]

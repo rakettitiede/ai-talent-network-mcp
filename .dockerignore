@@ -1,0 +1,26 @@
+# Dependencies (installed fresh in container)
+node_modules/
+
+# Development files
+*.sqlite
+*.db
+test/
+.nvmrc
+.claude/
+
+# Git and CI/CD
+.git/
+.github/
+
+# Environment and logs
+.env
+.env.*
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Development scripts (not needed at runtime)
+scripts/
