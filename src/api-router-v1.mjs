@@ -8,142 +8,97 @@ import { updateDatabase } from "./database.mjs";
  * @openapi
  * components:
  *   schemas:
+ *     SearchResultItem:
+ *       type: object
+ *       description: A single search result — anonymized, no personal data
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: Candidate or project ID
+ *           example: "candidate:a1b2c3d4-1234-5678-9abc-def012345678"
+ *         title:
+ *           type: string
+ *           description: "Availability status followed by match reason(s), separated by em dash (—)"
+ *           example: "Available now — matching skills with proficiency: React, TypeScript"
+ *         url:
+ *           type: string
+ *           description: Link to Rakettitiede website for follow-up contact
+ *           example: "https://www.rakettitiede.com"
  *     SearchResult:
  *       type: object
  *       properties:
  *         results:
  *           type: array
  *           items:
- *             type: object
- *           description: Array of candidates results
+ *             $ref: '#/components/schemas/SearchResultItem'
  *         count:
  *           type: integer
- *           description: Number of candidates that match the query string
+ *           description: Number of results returned
+ *           example: 3
+ *     Skill:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           example: "React"
+ *         proficiency:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 5
+ *           example: 4
+ *         motivation:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 5
  *           example: 5
+ *     CandidateText:
+ *       type: object
+ *       description: Anonymized candidate profile — no personal data
+ *       properties:
+ *         description:
+ *           type: string
+ *           description: Anonymized professional profile description
+ *           example: "Experienced fullstack developer specializing in React, Node.js, and cloud solutions."
+ *         skills:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Skill'
+ *         availability:
+ *           type: string
+ *           description: "Current availability: 'Available now', 'Available after YYYY-MM-DD (current project: name)', or 'Currently unavailable (current project: name, no end date)'"
+ *           example: "Available now"
  *     Document:
  *       type: object
- *       description: Response from fetch endpoint for candidate or project
+ *       description: Full anonymized candidate or project document
  *       properties:
  *         id:
  *           type: string
  *           description: Document ID (candidate:uuid or project:uuid)
- *           example: "candidate:cde02670-decc-4441-8823-bf62d4917dbc"
+ *           example: "candidate:a1b2c3d4-1234-5678-9abc-def012345678"
  *         title:
  *           type: string
- *           description: Human-readable title
- *           example: "Candidate: John Doe"
+ *           description: "'Candidate found' or 'Candidate found by project'"
+ *           example: "Candidate found"
  *         text:
- *           type: object
- *           description: Full document content (structure varies by type)
- *           oneOf:
- *             - $ref: '#/components/schemas/CandidateText'
- *             - $ref: '#/components/schemas/ProjectText'
+ *           $ref: '#/components/schemas/CandidateText'
  *         url:
  *           type: string
- *           description: Link to Agileday profile
- *           example: "https://agileday.com/en-GB/spaces/people?drawer[]=Employee:id=uuid"
+ *           description: Link to Rakettitiede website for follow-up contact
+ *           example: "https://www.rakettitiede.com"
  *         metadata:
  *           type: object
- *           description: Additional metadata about the document
  *           properties:
  *             type:
  *               type: string
  *               enum: [candidate, project]
- *             employeeId:
- *               type: string
- *             projectId:
- *               type: string
+ *               example: "candidate"
  *             skillsCount:
  *               type: integer
- *             certificatesCount:
- *               type: integer
- *             projectsCount:
- *               type: integer
- *     CandidateText:
- *       type: object
- *       description: Candidate details
- *       properties:
- *         name:
- *           type: string
- *           example: "John Doe"
- *         description:
- *           type: string
- *           description: External profile description
- *         segment:
- *           type: string
- *           example: "EMPLOYEE"
- *         availability:
- *           type: string
- *           example: "Available now"
- *         skills:
- *           type: array
- *           items:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               proficiency:
- *                 type: integer
- *                 minimum: 1
- *                 maximum: 5
- *               motivation:
- *                 type: integer
- *                 minimum: 1
- *                 maximum: 5
- *         certificates:
- *           type: array
- *           items:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               issued:
- *                 type: string
- *         projects:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/ProjectHistory'
- *     ProjectText:
- *       type: object
- *       description: Project details
- *       properties:
- *         id:
- *           type: string
- *         employee_id:
- *           type: string
- *         company:
- *           type: string
- *         title:
- *           type: string
- *         description:
- *           type: string
- *         role:
- *           type: string
- *         skills:
- *           type: string
- *         startDate:
- *           type: string
- *         endDate:
- *           type: string
- *         employeeName:
- *           type: string
- *     ProjectHistory:
- *       type: object
- *       properties:
- *         company:
- *           type: string
- *         title:
- *           type: string
- *         description:
- *           type: string
- *         role:
- *           type: string
- *         skills:
- *           type: string
- *         startDate:
- *           type: string
- *         endDate:
- *           type: string
+ *               example: 5
+ *             project:
+ *               type: string
+ *               description: Project description (only present when type is 'project')
+ *               example: "Built a real-time monitoring dashboard using React and GraphQL."
  *     Error:
  *       type: object
  *       properties:
@@ -159,8 +114,11 @@ export const apiRouterV1 = express.Router();
  * /search:
  *   get:
  *     operationId: searchCandidates
- *     summary: Search for candidates
- *     description: Search for candidates using a query string
+ *     summary: Search for anonymized candidates
+ *     description: >
+ *       Search for candidates by skill, role, or description. Returns anonymized results only —
+ *       no names, emails, or personal data. Results include availability status and match reasons.
+ *       Title format: "<availability> — <reason(s)>"
  *     tags: [Search]
  *     parameters:
  *       - in: query
@@ -168,8 +126,8 @@ export const apiRouterV1 = express.Router();
  *         required: true
  *         schema:
  *           type: string
- *         description: Search query string
- *         example: "Professional in Frontend with knowledge in NodeJS React and OpenAPI Python"
+ *         description: Search query (skills, role, or description)
+ *         example: "React TypeScript frontend developer"
  *     responses:
  *       200:
  *         description: Search results
@@ -179,30 +137,21 @@ export const apiRouterV1 = express.Router();
  *               $ref: '#/components/schemas/SearchResult'
  *             examples:
  *               searchResults:
- *                 summary: Example search results with different availability statuses
+ *                 summary: Example search results
  *                 value:
  *                   results:
- *                     - id: "candidate:cde02670-decc-4441-8823-bf62d4917dbc"
- *                       title: "John Doe (Frontend), Available now — matched by candidate name, profile description matches at 85%"
- *                       url: "https://agileday.com/profile/cde02670-decc-4441-8823-bf62d4917dbc"
- *                     - id: "project:3420d00b-9262-4ae0-afe5-f3d16963f3c0"
- *                       title: "John Doe (Frontend), Available now — history project matches at 90%: Built a modern e-commerce platform"
- *                       url: "https://agileday.com/profile/cde02670-decc-4441-8823-bf62d4917dbc"
- *                     - id: "candidate:abc12345-6789-0123-4567-890123456789"
- *                       title: "Jane Smith (Backend), Available after 2025-12-31 (current project: Nordea Investment Platform Phase 2) — matching skills with proficiency: Java, Spring Boot"
- *                       url: "https://agileday.com/profile/abc12345-6789-0123-4567-890123456789"
- *                     - id: "candidate:xyz98765-4321-0987-6543-210987654321"
- *                       title: "Alice Cooper (DevOps), Available after 2026-03-15 (current projects: Project A, Project B) — profile description matches at 88%"
- *                       url: "https://agileday.com/profile/xyz98765-4321-0987-6543-210987654321"
- *                     - id: "candidate:def67890-1234-5678-9012-345678901234"
- *                       title: "Bob Johnson (Fullstack), Currently unavailable (current project: Acme Corp Platform, no end date) — profile description matches at 92%"
- *                       url: "https://agileday.com/profile/def67890-1234-5678-9012-345678901234"
- *                     - id: "candidate:ghi11111-2222-3333-4444-555555555555"
- *                       title: "Charlie Brown (Backend), Currently unavailable (current projects: Project X, Project Y, no end date) — matching skills with proficiency: Python, Django"
- *                       url: "https://agileday.com/profile/ghi11111-2222-3333-4444-555555555555"
- *                   count: 6
+ *                     - id: "candidate:a1b2c3d4-1234-5678-9abc-def012345678"
+ *                       title: "Available now — matching skills with proficiency: React, TypeScript"
+ *                       url: "https://www.rakettitiede.com"
+ *                     - id: "candidate:b2c3d4e5-2345-6789-0bcd-ef0123456789"
+ *                       title: "Available after 2026-12-31 (current project: Microservices Platform) — profile description matches at 88%"
+ *                       url: "https://www.rakettitiede.com"
+ *                     - id: "project:c3d4e5f6-3456-7890-1cde-f01234567890"
+ *                       title: "Currently unavailable (current project: Analytics Platform, no end date) — history project matches at 82%: Built a real-time data pipeline using React and GraphQL."
+ *                       url: "https://www.rakettitiede.com"
+ *                   count: 3
  *       400:
- *         description: Missing or invalid query parameter
+ *         description: Missing or empty query parameter
  *         content:
  *           application/json:
  *             schema:
@@ -240,8 +189,10 @@ apiRouterV1.get("/search", async (req, res) => {
  * /fetch:
  *   get:
  *     operationId: fetchCandidate
- *     summary: Fetch full information of a candidate or project by ID
- *     description: Retrieve a specific document using its ID
+ *     summary: Fetch full anonymized candidate or project document
+ *     description: >
+ *       Retrieve a full anonymized candidate profile or project document by ID.
+ *       No personal data is returned — only skills, availability, and anonymized descriptions.
  *     tags: [Fetch]
  *     parameters:
  *       - in: query
@@ -249,80 +200,65 @@ apiRouterV1.get("/search", async (req, res) => {
  *         required: true
  *         schema:
  *           type: string
- *         description: Candidate or Project ID to fetch
- *         example: "candidate:cde02670-decc-4441-8823-bf62d4917dbc|project:3420d00b-9262-4ae0-afe5-f3d16963f3c0"
+ *         description: Document ID from search results (candidate:uuid or project:uuid)
+ *         example: "candidate:a1b2c3d4-1234-5678-9abc-def012345678"
  *     responses:
  *       200:
- *         description: Candidate or Project retrieved successfully
+ *         description: Document retrieved successfully
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Document'
  *             examples:
  *               candidateResponse:
- *                 summary: Example candidate response
+ *                 summary: Candidate document
  *                 value:
- *                   id: "candidate:cde02670-decc-4441-8823-bf62d4917dbc"
- *                   title: "Candidate: John Doe"
+ *                   id: "candidate:a1b2c3d4-1234-5678-9abc-def012345678"
+ *                   title: "Candidate found"
  *                   text:
- *                     name: "John Doe"
- *                     description: "Experienced frontend developer with expertise in React and Node.js"
+ *                     description: "Experienced fullstack developer specializing in React, Node.js, and cloud solutions."
  *                     skills:
  *                       - name: "React"
- *                         proficiency: "Expert"
- *                       - name: "JavaScript"
- *                         proficiency: "Advanced"
- *                     certificates: []
- *                     projects: []
- *                     segment: "Frontend"
+ *                         proficiency: 5
+ *                         motivation: 5
+ *                       - name: "TypeScript"
+ *                         proficiency: 4
+ *                         motivation: 4
  *                     availability: "Available now"
- *                   url: "https://agileday.com/profile/cde02670-decc-4441-8823-bf62d4917dbc"
+ *                   url: "https://www.rakettitiede.com"
  *                   metadata:
  *                     type: "candidate"
- *                     employeeId: "cde02670-decc-4441-8823-bf62d4917dbc"
- *                     skillsCount: 4
- *                     certificatesCount: 1
- *                     projectsCount: 1
+ *                     skillsCount: 5
  *               projectResponse:
- *                 summary: Example project response
+ *                 summary: Project document (candidate found via project history)
  *                 value:
- *                   id: "project:3420d00b-9262-4ae0-afe5-f3d16963f3c0"
- *                   title: "Project: Acme Corp - E-commerce Platform"
+ *                   id: "project:c3d4e5f6-3456-7890-1cde-f01234567890"
+ *                   title: "Candidate found by project"
  *                   text:
- *                     id: "3420d00b-9262-4ae0-afe5-f3d16963f3c0"
- *                     employee_id: "cde02670-decc-4441-8823-bf62d4917dbc"
- *                     company: "Acme Corp"
- *                     title: "E-commerce Platform"
- *                     description: "Built a modern e-commerce platform using React and Node.js"
- *                     role: "Senior Frontend Developer"
- *                     skills: "React, Node.js, TypeScript, PostgreSQL"
- *                     startDate: "2023-01-15"
- *                     endDate: "2024-06-30"
- *                     visibleInCv: true
- *                     employeeName: "John Doe"
- *                   url: "https://agileday.com/profile/cde02670-decc-4441-8823-bf62d4917dbc"
+ *                     description: "Experienced DevOps engineer specializing in cloud infrastructure and CI/CD pipelines."
+ *                     skills:
+ *                       - name: "Kubernetes"
+ *                         proficiency: 4
+ *                         motivation: 5
+ *                       - name: "Docker"
+ *                         proficiency: 5
+ *                         motivation: 5
+ *                     availability: "Available after 2026-06-30 (current project: Cloud Migration)"
+ *                   url: "https://www.rakettitiede.com"
  *                   metadata:
- *                     employee:
- *                       name: "John Doe"
- *                       description: "Experienced frontend developer with expertise in React and Node.js"
- *                       segment: "Frontend"
- *                       skills:
- *                         - name: "React"
- *                           proficiency: 5
- *                           motivation: 4
- *                         - name: "JavaScript"
- *                           proficiency: 5
- *                           motivation: 5
- *                       certificates:
- *                         - name: "AWS Certified Developer"
- *                           issued: "2022-03-15"
- *                       projects: []
- *                       availability: "Available now"
  *                     type: "project"
- *                     projectId: "3420d00b-9262-4ae0-afe5-f3d16963f3c0"
- *                     employeeId: "cde02670-decc-4441-8823-bf62d4917dbc"
+ *                     skillsCount: 4
+ *                     project: "Migrated legacy infrastructure to GCP using Kubernetes and Terraform."
+ *               notFound:
+ *                 summary: Document not found
+ *                 value:
+ *                   id: "candidate:00000000-0000-0000-0000-000000000000"
+ *                   title: "Not found"
+ *                   text: ""
+ *                   url: ""
+ *                   metadata: {}
  *       400:
- *         description: Missing or invalid ID parameter
+ *         description: Missing or invalid id parameter
  *         content:
  *           application/json:
  *             schema:
