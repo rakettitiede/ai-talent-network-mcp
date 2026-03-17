@@ -16,7 +16,7 @@ function runMigrations(db) {
   const files = fs.readdirSync(migrationsDir)
     .filter(f => f.endsWith('.sql'))
     .sort();
-  
+
   for (const file of files) {
     const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
     db.exec(sql);
@@ -53,56 +53,69 @@ export async function updateDatabase(token) {
   vec.load(db);
   runMigrations(db);
 
+  const projectsRaw = await api({ path: "/api/v1/history_project", token });
+
+  const openingsRaw = await api({ path: "/api/v1/opening", token });
+  const openingsFiltered = openingsRaw.filter(o => o.contractees?.length > 0);
+
   const empsRaw = await api({ path: "/api/v1/employee", token });
   const empsFiltered = empsRaw.filter(
     (e) => e.disabled === false && e.skills?.length > 0 && e.name && e.externalDescription
   );
 
-  console.log("🧩 Generating employee description embeddings...", empsFiltered.length);
+  console.log("🧩 Generating employee description, project descriptions embeddings...", empsFiltered.length);
 
   const employees = await Promise.all(
-    empsFiltered.map(async (e) => {
-      const profileVec = await embed(e.externalDescription);
-      return { ...e, profileVec };
+    empsFiltered.map(async (emp) => {
+      const {
+        id: originalId,
+        externalDescription: description,
+        skills,
+        certificates
+      } = emp;
+      const id = `temp:${crypto.randomUUID().slice(0, 8)}`;
+      const profileVec = await embed(description);
+      const projectsFiltered = projectsRaw
+        .filter(p => p.description && p.employeeId === originalId);
+
+      const projects = await Promise.all(
+        projectsFiltered.map(async (p) => {
+          const projectVec = await embed(p.description);
+          return {
+            id: `temp:${crypto.randomUUID().slice(0, 8)}`,
+            description: p.description,
+            employeeId: id,
+            projectVec
+          };
+        })
+      );
+
+      const openings = openingsFiltered.flatMap(opening =>
+        opening.contractees
+          .filter(contractee => contractee.id === originalId)
+          .map(() => ({
+            startDate: opening.startDate || opening.duration?.startDate,
+            endDate: opening.endDate || opening.duration?.endDate,
+            employeeId: id,
+          }))
+      );
+
+      return {
+        id,
+        description,
+        skills,
+        certificates,
+        profileVec,
+        projects,
+        openings,
+      };
     })
   );
 
-  console.log("✅ Employee descriptions embedded successfully!");
-
-  const projectsRaw = await api({ path: "/api/v1/history_project", token });
-  const projectsFiltered = projectsRaw
-    .filter(p => p.description && empsFiltered.some(e => e.id === p.employeeId));
-
-  console.log("🧩 Generating project description embeddings...", projectsFiltered.length);
-
-  const projects = await Promise.all(
-    projectsFiltered.map(async (p) => {
-      const projectVec = await embed(p.description);
-      return { ...p, projectVec };
-    })
-  );
-
-  console.log("✅ Project descriptions embedded successfully!");
-
-  const openingsRaw = await api({ path: "/api/v1/opening", token });
-
-  const openingsFiltered = openingsRaw.filter(o => o.contractees?.length > 0);
-
-  const openings = openingsFiltered.flatMap(opening =>
-    opening.contractees.map(contractee => ({
-      id: `${opening.id}-${contractee.id}`,
-      startDate: opening.startDate || opening.duration?.startDate,
-      endDate: opening.endDate || opening.duration?.endDate,
-      employeeId: contractee.id,
-      projectName: opening.projectlikeName,
-      projectId: opening.projectlikeId
-    }))
-  ).filter(o => empsFiltered.some(e => e.id === o.employeeId));
-
-  console.log(`\n👥 Total consultant-opening records (after flatMap): ${openings.length}`);
+  console.log("✅ Employee descriptions, project descriptions embedded successfully!");
 
   const insertEmp = db.prepare(
-    `INSERT OR IGNORE INTO employees (id, description, segment) VALUES (?, ?, ?, ?)`
+    `INSERT OR IGNORE INTO employees (id, description) VALUES (?, ?)`
   );
   const insertVec = db.prepare(
     `INSERT INTO vec_employees (employee_id, embed) VALUES (?, ?)`
@@ -114,21 +127,19 @@ export async function updateDatabase(token) {
     `INSERT OR IGNORE INTO employee_certificates (employee_id, name, issued) VALUES (?, ?, ?)`
   );
   const insertProject = db.prepare(
-    `INSERT OR IGNORE INTO project_history (id, employee_id, company, title, description, role, skills, startDate, endDate, visibleInCv) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    `INSERT OR IGNORE INTO project_history (id, employee_id, description) VALUES (?, ?, ?)`
   );
   const insertProjectVec = db.prepare(
     `INSERT INTO vec_projects (project_id, embed) VALUES (?,?)`
   );
 
   const insertOpening = db.prepare(
-    `INSERT OR IGNORE INTO openings (id, employee_id, start_date, end_date, project_name, project_id) VALUES (?, ?, ?, ?, ?, ?)`
+    `INSERT OR IGNORE INTO openings (employee_id, start_date, end_date) VALUES (?, ?, ?)`
   );
 
   const insertMany = db.transaction((emps) => {
     for (const e of emps) {
-      const name = `${e.firstName.trim()} ${e.lastName.trim()}`;
-      const segment = e.segment.toUpperCase();
-      insertEmp.run(e.id, name, e.externalDescription, segment);
+      insertEmp.run(e.id, e.description);
       insertVec.run(e.id, e.profileVec);
 
       for (const skill of e.skills) {
@@ -143,15 +154,13 @@ export async function updateDatabase(token) {
         insertCertificate.run(e.id, certificate.name, certificate.issued);
       }
 
-      const employeeProjects = projects.filter(p => p.employeeId === e.id);
-      for (const p of employeeProjects) {
-        insertProject.run(p.id, e.id, p.company, p.title, p.description, p.role, p.skills, p.startDate, p.endDate, p.visibleInCv ? 1 : 0);
+      for (const p of e.projects ?? []) {
+        insertProject.run(p.id, e.id, p.description);
         insertProjectVec.run(p.id, p.projectVec);
       }
 
-      const employeeOpenings = openings.filter(o => o.employeeId === e.id);
-      for (const o of employeeOpenings) {
-        insertOpening.run(o.id, o.employeeId, o.startDate, o.endDate, o.projectName, o.projectId);
+      for (const o of e.openings ?? []) {
+        insertOpening.run(o.employeeId, o.startDate, o.endDate);
       }
     }
   });
@@ -192,9 +201,9 @@ export function searchEmployeeById(id) {
     return null;
   }
 
-  const { name, description, segment, availability } = db.prepare(`
+  const { description, availability } = db.prepare(`
     SELECT
-      e.*,
+      e.description,
       a.availability
     FROM employees e
     JOIN employee_availability a ON e.id = a.employee_id
@@ -206,35 +215,9 @@ export function searchEmployeeById(id) {
 		WHERE s.employee_id = ?;`
   ).all(id);
 
-  const certificates = db.prepare(`
-		SELECT name, issued FROM employee_certificates c
-    WHERE c.employee_id = ?;`
-  ).all(id);
-
-  const projects = db.prepare(`
-		SELECT company, title, description, role, skills, startDate, endDate FROM project_history p
-		WHERE p.employee_id = ?;`
-  ).all(id);
-
   db.close();
 
-  return { name, description, segment, skills, certificates, projects, availability };
-}
-
-export function searchByName(query) {
-  const dbPath = getDatabasePath();
-  const db = new Database(dbPath);
-  const rows = db.prepare(`
-    SELECT 
-      e.*,
-      a.availability
-    FROM employees e
-    JOIN employee_availability a ON e.id = a.employee_id
-		WHERE instr(?, lower(e.name)) > 0
-		OR instr(lower(e.name),?) > 0;`
-  ).all(query, query);
-  db.close();
-  return rows;
+  return { description, skills, availability };
 }
 
 export function searchEmployeesBySkills(query) {
@@ -243,9 +226,7 @@ export function searchEmployeesBySkills(query) {
   const placeholders = tokens.map(() => '?').join(', ');
   const db = new Database(dbPath);
   const rows = db.prepare(`
-		SELECT e.id, 
-					 e.name, 
-					 e.segment,
+		SELECT e.id,
 					 group_concat(DISTINCT s.name || ' (' || s.proficiency || '/5)') AS skills,
 					 COUNT(DISTINCT s.name) AS skillCount,
 					 a.availability
@@ -253,7 +234,7 @@ export function searchEmployeesBySkills(query) {
 		JOIN employee_skills s ON e.id = s.employee_id
 		JOIN employee_availability a ON e.id = a.employee_id
 		WHERE s.name IN (${placeholders})
-		GROUP BY e.id, e.name, e.segment, a.availability
+		GROUP BY e.id, a.availability
 		ORDER BY skillCount DESC;`
   ).all(tokens);
   db.close();
@@ -266,7 +247,7 @@ export async function findMatchingCandidates(query) {
   const db = new Database(dbPath);
   vec.load(db);
   const rows = db.prepare(`
-		SELECT	e.*,
+		SELECT  e.id,
 						v.distance AS distance_num,
 						printf('%.3f', v.distance, 3) as distance,
             a.availability
@@ -290,11 +271,8 @@ export async function findMatchingProjects(query) {
   const db = new Database(dbPath);
   vec.load(db);
   const rows = db.prepare(`
-		SELECT	p.id,
-            p.employee_id as employeeId,
+		SELECT  p.id,
             p.description,
-						e.name,
-						e.segment,
 						v.distance AS distance_num,
 						printf('%.3f', v.distance, 3) as distance,
 						a.availability
@@ -326,10 +304,10 @@ export function searchProjectById(id) {
   const dbPath = getDatabasePath();
   const db = new Database(dbPath);
   const row = db.prepare(`
-		SELECT	p.*,
-						e.name as employeeName
+		SELECT	p.id,
+						p.description,
+						p.employee_id
     FROM project_history p
-		JOIN employees e ON p.employee_id = e.id
 		WHERE p.id =?;`
   ).get(id);
 
