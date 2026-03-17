@@ -7,10 +7,11 @@
   "scripts": {
     "start": "npm run check-node && node src/index.mjs",
     "dev": "npm run check-node && node --watch src/index.mjs",
-    "pretest": "npm run check-node && npm run check-fixtures",
+    "pretest": "npm run check-node && npm run check-fixtures && npm run check-ports",
     "test": "node --test --test-global-setup=test/global-setup.mjs --no-warnings test/integration/*.test.mjs",
     "check-node": "node scripts/check-node-version.mjs",
     "check-fixtures": "node scripts/check-search-fixtures.mjs",
+    "check-ports": "node scripts/check-ports.mjs",
     "migrate": "npm run check-node && node scripts/migrate.mjs"
   },
   "dependencies": {

@@ -129,3 +129,33 @@ New docs go in `docs/`. ADRs for all significant architecture decisions.
 | `GOOGLE_CLIENT_SECRET` | OAuth | Google OAuth client secret |
 | `NODE_ENV` | No | development (default) or production |
 | `PORT` | No | Server port (default 8080) |
+
+## Testing Architecture
+
+**Fixture-Based Embeddings**: Refresh operations use pre-captured embeddings from fixtures (captured via standalone script). All tests use mock Vertex AI server exclusively - no external API dependencies.
+
+### Test Writing Style
+
+All integration tests must use the **Arrange / Act / Assert** pattern with explicit comments:
+
+```javascript
+it('should return candidate when found', async () => {
+  // Arrange
+  const searchResult = await apiSearch('react');
+  const candidateResult = searchResult.results.find(r => r.id.startsWith('candidate:'));
+
+  // Act
+  const doc = await apiFetch(candidateResult.id);
+
+  // Assert
+  assert.strictEqual(doc.title, 'Candidate found');
+  assert.strictEqual(doc.url, RAKETTITIEDE_WEBSITE);
+});
+```
+
+**Rules:**
+- Every `it()` block must have `// Arrange`, `// Act`, `// Assert` comments
+- Arrange: set up data, find IDs, prepare inputs
+- Act: the single action being tested (one API call)
+- Assert: verify the outcome — one logical thing per test
+- Skip Arrange if the test has no setup (e.g. pure edge cases with inline inputs)
