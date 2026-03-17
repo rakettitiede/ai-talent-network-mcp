@@ -19,7 +19,7 @@ export const GOOGLE_TOKENINFO_URL = 'https://oauth2.googleapis.com/tokeninfo';
 export const NODE_ENV = process.env.NODE_ENV || "development";
 export const PORT = process.env.PORT || 8080;
 export const PYRY_BOT_TOKEN = process.env.PYRY_BOT_TOKEN;
-export const RAKETTITIEDE_WEBSITE = 'https://www.rakettitiede.com/';
+export const RAKETTITIEDE_WEBSITE = 'https://www.rakettitiede.com';
 export const REFRESH_DATA = process.env.REFRESH_DATA === "1"? true : false;
 export const SERVER_NAME = pkg.name;
 export const SERVER_VERSION = pkg.version;
