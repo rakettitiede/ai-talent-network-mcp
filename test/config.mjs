@@ -4,8 +4,7 @@ export const TEST_CONFIG = {
   SERVER_URL: `http://localhost:8080`,
   AGILEDAY_BASE_URL: 'http://localhost:3000',
   API_KEY: 'test-api-key',
-  OPENAI_BASE_URL: 'http://localhost:3001/v1',
-  OPENAI_KEY: 'test-openai-key',
+  GCP_MOCK_VERTEX_URL: 'http://localhost:3001',
 
   TEST_NOT_FOUND_ID: '00000000-0000-0000-0000-000000000000',
   TEST_INVALID_ID: 'invalid-id-123',
@@ -258,7 +257,7 @@ export class MockApiServerManager {
   }
 }
 
-export class MockOpenAiServerManager {
+export class MockVertexAiServerManager {
   constructor() {
     this.serverProcess = null;
     this.serverReady = false;
@@ -268,12 +267,10 @@ export class MockOpenAiServerManager {
     return new Promise((resolve, reject) => {
       this.serverReady = false;
       const cwd = new URL('../', import.meta.url).pathname;
-      const mockOpenAiPath = new URL('../test/openai-api-mock/index.mjs', import.meta.url).pathname;
-      this.serverProcess = spawn(process.execPath, [mockOpenAiPath], {
+      const mockVertexAiPath = new URL('../test/vertex-ai-mock/index.mjs', import.meta.url).pathname;
+      this.serverProcess = spawn(process.execPath, [mockVertexAiPath], {
         env: {
-          OPENAI_MOCK_PORT: '3001',
-          OPENAI_BASE_URL: TEST_CONFIG.OPENAI_BASE_URL,
-          OPENAI_KEY: TEST_CONFIG.OPENAI_KEY,
+          VERTEX_MOCK_PORT: '3001',
           ...process.env,
         },
         stdio: ['pipe', 'pipe', 'pipe'],
@@ -282,7 +279,7 @@ export class MockOpenAiServerManager {
       
       this.serverProcess.stdout.on('data', (data) => {
         const output = data.toString();
-        if (output.includes('🚀 Mock OpenAI API server running') && !this.serverReady) {
+        if (output.includes('🚀 Mock Vertex AI server running') && !this.serverReady) {
           this.serverReady = true;
           resolve(this.serverProcess);
         }
@@ -331,8 +328,7 @@ export class ServerManager {
         env: {
           AGILEDAY_BASE_URL: TEST_CONFIG.AGILEDAY_BASE_URL,
           API_KEY: TEST_CONFIG.API_KEY,
-          OPENAI_BASE_URL: TEST_CONFIG.OPENAI_BASE_URL,
-          OPENAI_KEY: TEST_CONFIG.OPENAI_KEY,
+          GCP_MOCK_VERTEX_URL: TEST_CONFIG.GCP_MOCK_VERTEX_URL,
           NODE_ENV: 'test',
           ...process.env,
         },
