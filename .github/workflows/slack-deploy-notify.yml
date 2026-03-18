@@ -58,10 +58,10 @@ jobs:
           curl -X POST https://slack.com/api/chat.postMessage \
             -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "{\"channel\":\"@nicoandres\",\"text\":\"⚙️ New server version ${VERSION}\n🔑 API key: \`${API_KEY}\`\"}"
+            -d "{\"channel\":\"@nicoandres\",\"text\":\"⚙️ MCP Talent Network ${VERSION} deployed\n🔑 API key: \`${API_KEY}\`\"}"
 
           # Send to Marko
           curl -X POST https://slack.com/api/chat.postMessage \
             -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "{\"channel\":\"@marko\",\"text\":\"⚙️ New server version ${VERSION}\n🔑 API key: \`${API_KEY}\`\"}"
+            -d "{\"channel\":\"@marko\",\"text\":\"⚙️ MCP Talent Network ${VERSION} deployed\n🔑 API key: \`${API_KEY}\`\"}"
