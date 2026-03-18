@@ -56,7 +56,7 @@ Data is loaded into the database via an offline import script (not via the serve
 - `src/api-router-v1.mjs` — REST API: /search, /fetch
 - `src/require-auth.mjs` — API key + OAuth Bearer token auth
 - `src/oauth-router.mjs` — OAuth proxy for Custom GPT integration
-- `src/embeddings.mjs` — OpenAI text-embedding-3-small (1536 dims)
+- `src/embeddings.mjs` — Vertex AI text-embedding-005 (768 dims)
 - `src/storage.mjs` — GCS database download/upload
 - `src/constants.mjs` — All env vars and configuration
 

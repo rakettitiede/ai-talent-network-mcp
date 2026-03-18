@@ -92,7 +92,6 @@ jobs:
             API_KEY=${{ env.API_KEY }},
             GOOGLE_CLIENT_ID=${{ vars.GOOGLE_CLIENT_ID }}
           secrets: |
-            OPENAI_KEY=openai-key:latest,
             GOOGLE_CLIENT_SECRET=google-client-secret:latest
       - name: 'Show output'
         run: |2-
