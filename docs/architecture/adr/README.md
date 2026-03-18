@@ -10,13 +10,15 @@ An ADR is a document that captures an important architectural decision made alon
 
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
-| [0001](0001-use-mock-openai-api-for-testing.md) | Use Mock OpenAI API for Testing | Accepted | 2025-01 |
+| [0001](0001-use-mock-vertex-ai-for-testing.md) | Use Mock Vertex AI for Testing | Accepted | 2026-03 |
 | [0002](0002-refresh-test-fixture-based-embeddings.md) | Refresh Test Fixture-Based Embeddings | Accepted | 2026-01 |
 | [0003](0003-oauth-proxy-google.md) | OAuth Proxy with Google for Custom GPT Integration | Accepted | 2026-01 |
 | [0004](0004-restructure-documentation.md) | Restructure Documentation Following Standard Practices | Accepted | 2026-01 |
 | [0005](0005-ai-assistant-integration.md) | AI Assistant Integration and Workflow Guardrails | Accepted | 2026-01 |
 | [0006](0006-database-schema-management.md) | Database Schema Management with SQL Migrations | Accepted | 2026-01 |
 | [0007](0007-search-query-test-fixtures.md) | Search Query Test Fixtures via TEST_SEARCH_QUERY | Accepted | 2026-02 |
+| [0008](0008-anonymous-database-design.md) | Anonymous Database Design | Accepted | 2026-03 |
+| [0009](0009-vertex-ai-embeddings.md) | Vertex AI Embeddings (text-embedding-005, 768 dimensions) | Accepted | 2026-03 |
 
 ## ADR Template
 
