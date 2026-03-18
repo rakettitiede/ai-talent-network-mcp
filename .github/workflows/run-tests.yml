@@ -1,0 +1,10 @@
+name: 🧪 — quality assurance check (run all test)
+
+on:
+  pull_request:
+    branches: [ "*" ]
+
+jobs:
+  quality-check:
+    uses: ./.github/workflows/quality-assurance.yml
+    secrets: {}

@@ -3,5 +3,4 @@ node_modules
 # Database files (generated during tests)
 *.sqlite
 
-.github/
-package-lock.json
+pnpm-lock.yaml
