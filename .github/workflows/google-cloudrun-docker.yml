@@ -1,0 +1,100 @@
+name: '🌎 — build and deploy to cloud run'
+
+on:
+  push:
+    tags:
+      - '*'
+
+env:
+  PROJECT_ID: 'ai-cv-match-471207'
+  REGION: 'europe-north1'
+  SERVICE: 'mcp-talent-network'
+  WORKLOAD_IDENTITY_PROVIDER: 'projects/938427813842/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
+
+jobs:    
+  quality-assurance:
+    name: '🧪 — quality assurance'
+    uses: ./.github/workflows/quality-assurance.yml
+    secrets: {}
+ 
+  generate-api-key:
+    name: '🔑 — Generate API Key'
+    needs: [quality-assurance]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate API Key
+        run: |
+          openssl rand -hex 32 > api_key.txt
+          echo "API_KEY=$(cat api_key.txt)" >> $GITHUB_ENV
+
+      - name: Upload api key artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-key-artifact
+          path: api_key.txt
+          retention-days: 7
+          compression-level: 9
+      
+  deploy:
+    name: '🚀 — Deploy to Cloud Run'
+    needs: [generate-api-key]
+    runs-on: 'ubuntu-latest'
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Download API key artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: api-key-artifact
+          path: ./secrets
+          
+      - name: Load API_KEY
+        run: echo "API_KEY=$(cat ./secrets/api_key.txt)" >> $GITHUB_ENV
+      
+      - name: 'Checkout'
+        uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332' # actions/checkout@v4
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@f112390a2df9932162083945e46d439060d66ec2' # google-github-actions/auth@v2
+        with:
+          workload_identity_provider: '${{ env.WORKLOAD_IDENTITY_PROVIDER }}'
+  
+      - name: 'Docker Auth'
+        uses: 'docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567' # docker/login-action@v3
+        with:
+          username: 'oauth2accesstoken'
+          password: '${{ steps.auth.outputs.auth_token }}'
+          registry: '${{ env.REGION }}-docker.pkg.dev'
+
+      - name: 'Build and Push Container'
+        run: |-
+          DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/mcp-talent-network/${{ env.SERVICE }}:${{ github.sha }}"
+          docker build -f Containerfile --tag "${DOCKER_TAG}" .
+          docker push "${DOCKER_TAG}"
+      - name: 'Deploy to Cloud Run'
+        id: deploy
+        uses: 'google-github-actions/deploy-cloudrun@33553064113a37d688aa6937bacbdc481580be17' # google-github-actions/deploy-cloudrun@v2
+        with:
+          service: '${{ env.SERVICE }}'
+          region: '${{ env.REGION }}'
+          image: '${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/mcp-talent-network/${{ env.SERVICE }}:${{ github.sha }}'
+          flags: '--allow-unauthenticated'
+          project_id: '${{ env.PROJECT_ID }}'
+          env_vars: |
+            NODE_ENV=${{ vars.NODE_ENV }},
+            GCS_BUCKET=${{ vars.GCS_BUCKET }},
+            AGILEDAY_BASE_URL=${{ vars.AGILEDAY_BASE_URL }},
+            API_KEY=${{ env.API_KEY }},
+            GOOGLE_CLIENT_ID=${{ vars.GOOGLE_CLIENT_ID }}
+          secrets: |
+            OPENAI_KEY=openai-key:latest,
+            GOOGLE_CLIENT_SECRET=google-client-secret:latest
+      - name: 'Show output'
+        run: |2-
+
+          echo ${{ steps.deploy.outputs.url }}

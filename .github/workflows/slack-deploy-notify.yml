@@ -1,0 +1,105 @@
+name: '📣 — post deploy notification to Slack'
+
+on:
+  workflow_run:
+    workflows: ['📦 — Create Release After Deploy']
+    types:
+      - completed
+
+jobs:
+  notify-slack:
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+
+    permissions:
+      contents: read
+      actions: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download latest API key artifact from deploy workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+        run: |
+          echo "🔍 Finding latest successful deploy run..."
+          DEPLOY_RUN_ID=$(gh api repos/$OWNER/$REPO/actions/workflows \
+            --jq '.workflows[] | select(.name=="🌎 — build and deploy to cloud run") | .id' | \
+            xargs -I{} gh api repos/$OWNER/$REPO/actions/workflows/{}/runs \
+            --jq '.workflow_runs[] | select(.conclusion=="success") | .id' | head -n1)
+
+          echo "Found deploy run ID: $DEPLOY_RUN_ID"
+
+          ARTIFACT_ID=$(gh api repos/$OWNER/$REPO/actions/runs/$DEPLOY_RUN_ID/artifacts \
+            --jq '.artifacts[] | select(.name=="api-key-artifact") | .id')
+
+          if [ -z "$ARTIFACT_ID" ]; then
+            echo "⚠️  Artifact not found, using placeholder key"
+            echo "TEST_KEY_1234" > api_key.txt
+          else
+            echo "📦 Downloading artifact ID: $ARTIFACT_ID"
+            gh api repos/$OWNER/$REPO/actions/artifacts/$ARTIFACT_ID/zip > artifact.zip
+            unzip -j artifact.zip -d ./secrets
+            mv ./secrets/api_key.txt ./api_key.txt
+          fi
+
+      - name: '📣 Notify Slack'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          VERSION=$(jq -r .version package.json)
+          
+          echo "📡 Sending message to Slack..."
+          curl -X POST -H 'Content-type: application/json' \
+            --data '{
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "🚀 MCP Talent Network v'"${VERSION}"' deployed successfully"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "✅ *Server is live and ready to use*\n🔐 Sign in with your Rakettitiede Google account"
+                  }
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "📖 <https://github.com/rakettitiede/mcp-talent-network/releases/tag/v'"${VERSION}"'|View full changelog>\n💬 Questions? Drop them below 👇"
+                  }
+                }
+              ]
+            }' \
+            "$SLACK_WEBHOOK_URL"
+
+      - name: '🔐 Send API_KEY to Marko and Nicoandres (Private DMs)'
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        run: |
+          VERSION=$(jq -r .version package.json)
+          API_KEY=$(cat api_key.txt 2>/dev/null || echo "TEST_KEY_1234")
+          
+          # Send to Nicoandres
+          curl -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"channel\":\"@nicoandres\",\"text\":\"⚙️ New server version ${VERSION}\\n🔑 API key: \`${API_KEY}\`\"}"
+          
+          # Send to Marko
+          curl -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"channel\":\"@marko\",\"text\":\"⚙️ New server version ${VERSION}\\n🔑 API key: \`${API_KEY}\`\"}"
