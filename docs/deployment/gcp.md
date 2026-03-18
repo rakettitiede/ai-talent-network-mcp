@@ -46,6 +46,74 @@ gcloud auth list
 gcloud config get-value project
 ```
 
+## First Deploy
+
+Run every command below in order. The sections below this one document each step in detail — this checklist is the shortcut.
+
+```fish
+# Set variables once
+set PROJECT_ID ai-cv-match-471207
+set PROJECT_NUMBER 938427813842
+set REGION europe-north1
+set SERVICE mcp-talent-network
+set REPO rakettitiede/ai-talent-network-mcp
+set SA $PROJECT_NUMBER-compute@developer.gserviceaccount.com
+```
+
+```fish
+# 1. Authenticate
+gcloud auth login
+gcloud config set project $PROJECT_ID
+
+# 2. Artifact Registry — create Docker repo
+gcloud artifacts repositories create $SERVICE   --repository-format=docker   --location=$REGION   --description="Docker repository for $SERVICE"
+
+# 3. Workload Identity — update attribute condition
+gcloud iam workload-identity-pools providers update-oidc github-provider   --workload-identity-pool=github-pool   --location=global   --attribute-condition="assertion.repository == 'rakettitiede/mcp-agileday' || assertion.repository == 'rakettitiede/ai-talent-search-pyry' || assertion.repository == '$REPO'"
+
+# 4. Workload Identity — grant IAM permissions
+gcloud artifacts repositories add-iam-policy-binding $SERVICE   --location=$REGION   --member="principalSet://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/github-pool/attribute.repository/$REPO"   --role="roles/artifactregistry.writer"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID   --member="principalSet://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/github-pool/attribute.repository/$REPO"   --role="roles/run.admin"
+
+gcloud iam service-accounts add-iam-policy-binding $SA   --member="principalSet://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/github-pool/attribute.repository/$REPO"   --role="roles/iam.serviceAccountUser"
+
+# 5. Vertex AI — grant embedding access
+gcloud projects add-iam-policy-binding $PROJECT_ID   --member="serviceAccount:$SA"   --role="roles/aiplatform.user"
+
+# 6. Secret Manager — create secret and grant access
+gcloud services enable secretmanager.googleapis.com
+echo -n "your-google-client-secret" | gcloud secrets create google-client-secret --data-file=-
+gcloud secrets add-iam-policy-binding google-client-secret   --member="serviceAccount:$SA"   --role="roles/secretmanager.secretAccessor"
+
+# 7. GCS Bucket — create and grant access
+gcloud storage buckets create gs://ai-talent-network-db   --location=$REGION   --default-storage-class=STANDARD
+gcloud storage buckets add-iam-policy-binding gs://ai-talent-network-db   --member="serviceAccount:$SA"   --role="roles/storage.objectAdmin"
+
+# 8. GitHub — set variables
+gh variable set NODE_ENV --repo $REPO --body "production"
+gh variable set GCS_BUCKET --repo $REPO --body "ai-talent-network-db"
+gh variable set AGILEDAY_BASE_URL --repo $REPO --body "https://rakettitiede.agileday.io"
+gh variable set GOOGLE_CLIENT_ID --repo $REPO --body "938427813842-64bm1hgthi2ol4cq2aatl7duiqf8e07s.apps.googleusercontent.com"
+
+# 9. GitHub — set secret (interactive prompt)
+gh secret set SLACK_BOT_TOKEN --repo $REPO
+
+# 10. Tag and deploy
+npm version minor -m "feat: initial release"
+git push && git push --tags
+```
+
+After deploy completes, the API key arrives via Slack DM. Use it to initialize the database:
+
+```fish
+set SERVICE_URL (gcloud run services describe $SERVICE --region $REGION --format='value(status.url)')
+
+curl -X POST $SERVICE_URL/api/v1/refresh   -H "X-API-Key: YOUR_API_KEY"   -H "Content-Type: application/json"   -d '{"token": "YOUR_AGILEDAY_HR_TOKEN"}'
+```
+
+> The AgileDay token requires HR Admin permissions — only Marko can generate it.
+
 ## Artifact Registry
 
 Verify no existing repository first:
