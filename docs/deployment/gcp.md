@@ -26,11 +26,11 @@ set REPO rakettitiede/ai-talent-network-mcp
 set SA $PROJECT_NUMBER-compute@developer.gserviceaccount.com
 ```
 
-`SA` is the default Compute Engine service account — automatically created by GCP when Cloud Run is first used in the project. Cloud Run instances run as this account by default.
+`SA` is the default Compute Engine service account — automatically created by GCP when Cloud Run is first used in the project. Cloud Run instances run as this account by default, so IAM permissions granted to it apply to the running service.
 
 ## Prerequisites
 
-- Workload Identity Pool: `github-pool` (shared across all Rakettitiede services — pool and provider already exist)
+- Workload Identity Pool: `github-pool` (shared with ai-talent-search-mcp — pool and provider already exist)
 
 Authenticate and set the project:
 
@@ -65,55 +65,54 @@ gcloud artifacts repositories create $SERVICE \
 
 ## Workload Identity
 
-The workflow authenticates to GCP via Workload Identity Federation — no service account keys needed. Add this repo to the provider's attribute condition and grant the required IAM permissions.
+The workflow authenticates to GCP via Workload Identity Federation — no service account keys needed. This step adds `$REPO` to the provider's attribute condition and grants the repository the IAM permissions it needs during deployment.
 
-> The attribute condition update is additive — existing repositories remain in the condition and their deploys are unaffected.
+> The attribute condition update is additive — existing repositories (`rakettitiede/mcp-agileday` etc.) remain in the condition and their deploys are unaffected.
 
-### Update attribute condition
+Update the provider attribute condition to include this repository:
 
 ```bash
-# Get current condition first
-gcloud iam workload-identity-pools providers describe github-provider \
-  --workload-identity-pool=github-pool \
-  --location=global \
-  --format="value(attributeCondition)"
-
-# Add this repo to the condition (replace the full condition string)
 gcloud iam workload-identity-pools providers update-oidc github-provider \
   --workload-identity-pool=github-pool \
   --location=global \
-  --attribute-condition="assertion.repository == 'rakettitiede/mcp-agileday' || assertion.repository == 'rakettitiede/ai-talent-search-pyry' || assertion.repository == 'rakettitiede/ai-talent-network-mcp'"
+  --attribute-condition="assertion.repository == 'rakettitiede/mcp-agileday' || assertion.repository == 'rakettitiede/ai-talent-search-pyry' || assertion.repository == '$REPO'"
 ```
 
-### Grant IAM permissions
+Grant the required IAM permissions:
 
 ```bash
-# 1. Artifact Registry push permission
+# Push images to Artifact Registry
 gcloud artifacts repositories add-iam-policy-binding $SERVICE \
   --location=$REGION \
   --member="principalSet://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/github-pool/attribute.repository/$REPO" \
   --role="roles/artifactregistry.writer"
 
-# 2. Cloud Run admin permission
+# Deploy to Cloud Run
 gcloud projects add-iam-policy-binding $PROJECT_ID \
   --member="principalSet://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/github-pool/attribute.repository/$REPO" \
   --role="roles/run.admin"
 
-# 3. Service account user permission
+# Act as the Cloud Run service account
 gcloud iam service-accounts add-iam-policy-binding $SA \
   --member="principalSet://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/github-pool/attribute.repository/$REPO" \
   --role="roles/iam.serviceAccountUser"
 ```
 
-## Secret Management
+## Vertex AI
 
-One secret is managed via GCP Secret Manager:
+Grant the Cloud Run service account access to Vertex AI (used for generating embeddings via `text-embedding-005`):
 
-| Secret name | Description |
-|---|---|
-| `google-client-secret` | Google OAuth client secret (for Custom GPT / OAuth proxy) |
+```bash
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:$SA" \
+  --role="roles/aiplatform.user"
+```
 
-> **Note:** No API key secret is needed for embeddings — Vertex AI uses Application Default Credentials provided automatically by Cloud Run.
+## Secret Manager
+
+The service requires one secret at runtime:
+
+- `google-client-secret` — Google OAuth client secret (for Custom GPT / OAuth proxy)
 
 ### Create secret
 
@@ -123,7 +122,9 @@ gcloud services enable secretmanager.googleapis.com
 echo -n "your-google-client-secret" | gcloud secrets create google-client-secret --data-file=-
 ```
 
-### Grant Cloud Run access to secrets
+> **OAuth Setup Note:** When creating the Google OAuth client for the first time, you can leave the "Authorized redirect URIs" empty. Deploy first, get your Cloud Run URL, then add `https://YOUR-CLOUD-RUN-URL/oauth/callback` to the OAuth client.
+
+### Grant Cloud Run service account access
 
 ```bash
 gcloud secrets add-iam-policy-binding google-client-secret \
@@ -135,34 +136,32 @@ gcloud secrets add-iam-policy-binding google-client-secret \
 
 The production database (`talent-network.sqlite`) is stored in GCS. See [Database Setup](./database.md) for full details.
 
-Quick setup:
-
 ```bash
-# Create bucket
 gcloud storage buckets create gs://ai-talent-network-db \
   --location=$REGION \
   --default-storage-class=STANDARD
 
-# Grant Cloud Run service account access
 gcloud storage buckets add-iam-policy-binding gs://ai-talent-network-db \
   --member="serviceAccount:$SA" \
   --role="roles/storage.objectAdmin"
 ```
 
-## GitHub Repository Setup
+## GitHub Secrets
 
-### Secrets (Settings → Secrets and variables → Actions → Secrets)
+Set this in repository settings (Settings → Secrets and variables → Actions → Secrets):
 
 | Secret | Description |
 |---|---|
 | `SLACK_BOT_TOKEN` | Slack bot token for deploy notifications |
 
-### Variables (Settings → Secrets and variables → Actions → Variables)
+## GitHub Variables
+
+Set these in repository settings (Settings → Secrets and variables → Actions → Variables):
 
 | Variable | Value |
 |---|---|
 | `NODE_ENV` | `production` |
-| `GCS_BUCKET` | `ai-talent-network-db` (or your bucket name) |
+| `GCS_BUCKET` | `ai-talent-network-db` |
 | `AGILEDAY_BASE_URL` | Agileday API base URL |
 | `GOOGLE_CLIENT_ID` | Google OAuth client ID (for Custom GPT) |
 
@@ -198,7 +197,7 @@ curl -X POST https://<your-cloud-run-url>/api/v1/refresh \
   -d '{"token": "YOUR_AGILEDAY_HR_TOKEN"}'
 ```
 
-The API key is auto-generated during deploy. Find it in the GitHub release notes or the Slack notification.
+The API key is auto-generated during deploy — find it in the GitHub release notes or the Slack notification.
 
 > The AgileDay token requires HR Admin permissions. It is passed as a request body parameter only — never stored as an environment variable.
 
@@ -214,16 +213,6 @@ gcloud run services logs read $SERVICE --region $REGION --limit 50
 
 ```bash
 curl https://<your-cloud-run-url>/
-```
-
-Expected response:
-
-```json
-{
-  "ok": true,
-  "service": "mcp-talent-network",
-  "version": "X.Y.Z"
-}
 ```
 
 ## Rollback
@@ -251,19 +240,10 @@ gcloud run services update-traffic $SERVICE \
 → Run the service account user IAM binding (see above)
 
 **Service starts but embeddings fail**
-→ Vertex AI uses ADC — no extra credentials needed on Cloud Run. Check that the service account has `roles/aiplatform.user` if Vertex AI calls fail:
-```bash
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member="serviceAccount:$SA" \
-  --role="roles/aiplatform.user"
-```
+→ Check that the service account has `roles/aiplatform.user` (see Vertex AI section above)
 
 **Database not found on startup**
-→ GCS bucket permission issue, or first deploy before refresh has been called. Check logs and run refresh endpoint.
-
-```bash
-gcloud run services logs read $SERVICE --region $REGION --limit 50
-```
+→ GCS bucket permission issue, or first deploy before refresh has been called. Check logs and run the refresh endpoint.
 
 ## Related Documentation
 
