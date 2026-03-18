@@ -99,17 +99,31 @@ gh variable set GOOGLE_CLIENT_ID --repo $REPO --body "938427813842-64bm1hgthi2ol
 # 9. GitHub — set secret (interactive prompt)
 gh secret set SLACK_BOT_TOKEN --repo $REPO
 
-# 10. Tag and deploy
+# 10. Seed the GCS bucket with a development database
+# Run tests first to generate the fixture database, then upload it.
+# The server needs a valid SQLite file on startup — without this it crashes on first deploy.
+# The fixture data lets you verify search works before triggering a real data refresh.
+npm test
+gcloud storage cp development-db.sqlite gs://ai-talent-network-db/talent-network.sqlite
+
+# 11. Tag and deploy
 npm version minor -m "feat: initial release"
 git push && git push --tags
 ```
 
-After deploy completes, the API key arrives via Slack DM. Use it to initialize the database:
+After deploy completes, the API key arrives via Slack DM. Verify the service works with fixture data first:
 
 ```fish
 set SERVICE_URL (gcloud run services describe $SERVICE --region $REGION --format='value(status.url)')
 
-curl -X POST $SERVICE_URL/api/v1/refresh   -H "X-API-Key: YOUR_API_KEY"   -H "Content-Type: application/json"   -d '{"token": "YOUR_AGILEDAY_HR_TOKEN"}'
+# Smoke test with fixture data
+curl "$SERVICE_URL/api/v1/search?q=react&api_key=YOUR_API_KEY"
+
+# Once verified, initialize with real data (Marko's Agileday HR token required)
+curl -X POST $SERVICE_URL/api/v1/refresh \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"token": "YOUR_AGILEDAY_HR_TOKEN"}'
 ```
 
 > The AgileDay token requires HR Admin permissions — only Marko can generate it.
