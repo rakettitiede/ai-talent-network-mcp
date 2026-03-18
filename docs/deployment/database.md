@@ -106,7 +106,7 @@ This installs all required packages including:
 - `better-sqlite3` - SQLite database driver
 - `sqlite-vec` - Vector similarity search extension
 - `@google-cloud/storage` - GCS client (for production)
-- `openai` - For generating embeddings
+- `@google-cloud/vertexai` / `google-auth-library` - For generating embeddings via Vertex AI
 
 ### Step 2: Set Environment Variables
 
@@ -116,7 +116,8 @@ Create a `.env` file or export variables directly:
 # Required for all operations
 export API_KEY="your-secure-api-key"           # Generate with: openssl rand -hex 32
 export AGILEDAY_BASE_URL="https://your-agileday-instance.com"
-export OPENAI_KEY="your-openai-api-key"
+export GCP_PROJECT_ID="your-gcp-project-id"
+export GCP_LOCATION="your-gcp-location"
 
 # For development (database stored locally)
 export NODE_ENV="development"
@@ -189,7 +190,7 @@ The refresh operation creates these tables:
 
 ## Vector Extension Setup
 
-The `sqlite-vec` extension is crucial for semantic search functionality. It enables storing and querying 1536-dimensional vector embeddings from OpenAI's `text-embedding-3-small` model.
+The `sqlite-vec` extension is crucial for semantic search functionality. It enables storing and querying 768-dimensional vector embeddings from Vertex AI `text-embedding-005`.
 
 ### How It Works
 
@@ -206,7 +207,7 @@ The `sqlite-vec` extension is crucial for semantic search functionality. It enab
    ```sql
    CREATE VIRTUAL TABLE vec_employees USING vec0(
      employee_id TEXT PRIMARY KEY,
-     embed FLOAT[1536] distance_metric=cosine
+     embed FLOAT[768] distance_metric=cosine
    );
    ```
 
@@ -348,7 +349,6 @@ ls -lh /tmp/test-download.sqlite
 |----------|----------|---------|-------------|
 | `API_KEY` | Yes | - | Authentication key for API endpoints |
 | `AGILEDAY_BASE_URL` | Yes | - | Base URL of your Agileday instance |
-| `OPENAI_KEY` | Yes | - | OpenAI API key for embeddings |
 | `NODE_ENV` | No | `development` | `development` or `production` |
 | `GCS_BUCKET` | Production | - | GCS bucket name for database storage |
 | `PORT` | No | `8080` | Server port |
@@ -374,8 +374,6 @@ API_KEY=abc123def456...  # Generate with: openssl rand -hex 32
 # Agileday API
 AGILEDAY_BASE_URL=https://api.agileday.com
 
-# OpenAI (for embeddings)
-OPENAI_KEY=sk-...
 
 # Environment
 NODE_ENV=development
@@ -507,19 +505,12 @@ curl -X POST -H "X-API-Key: YOUR_KEY" \
 
 ### Embeddings Generation Fails
 
-**Error**: `Error: 401 Unauthorized` from OpenAI
-
-**Solution**: Verify your OpenAI key has embeddings access:
-1. Go to [OpenAI API Keys](https://platform.openai.com/api-keys)
-2. Ensure the key has "Model capabilities → Write" permission
-3. Test the key: `curl https://api.openai.com/v1/models -H "Authorization: Bearer YOUR_KEY"`
-
 **Error**: `Fixture not found for text...` (in tests)
 
 **Solution**: This means the mock server doesn't have cached embeddings. For tests:
 ```bash
 # Capture new embeddings fixtures
-export OPENAI_KEY=your-real-key
+export GCP_PROJECT_ID / GCP_LOCATION=your-real-key
 node test/scripts/capture-refresh-embeddings.mjs
 node test/scripts/generate-fixture-index.mjs
 ```
@@ -583,7 +574,7 @@ npm install
 # 2. Set environment
 export API_KEY=$(openssl rand -hex 32)
 export AGILEDAY_BASE_URL="https://your-agileday.com"
-export OPENAI_KEY="sk-..."
+export GCP_PROJECT_ID / GCP_LOCATION="sk-..."
 export NODE_ENV="development"
 
 # 3. Start server

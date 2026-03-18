@@ -4,7 +4,7 @@ const GCP_EMBEDDING_MODEL_NAME = 'text-embedding-005';
 
 export const AGILEDAY_BASE_URL = process.env.AGILEDAY_BASE_URL;
 export const API_KEY = process.env.API_KEY;
-export const DATABASE_NAME = "agileday-mcp.sqlite";
+export const DATABASE_NAME = "talent-network.sqlite";
 export const DATABASE_NAME_DEVELOPMENT = "development-db.sqlite";
 export const GCP_EMBEDDING_DIMENSIONS = 768;
 export const GCP_LOCATION = process.env.GCP_LOCATION || 'europe-north1';
