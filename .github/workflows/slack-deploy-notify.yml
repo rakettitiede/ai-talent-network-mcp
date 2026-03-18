@@ -47,59 +47,21 @@ jobs:
             mv ./secrets/api_key.txt ./api_key.txt
           fi
 
-      - name: '📣 Notify Slack'
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          VERSION=$(jq -r .version package.json)
-          
-          echo "📡 Sending message to Slack..."
-          curl -X POST -H 'Content-type: application/json' \
-            --data '{
-              "blocks": [
-                {
-                  "type": "header",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "🚀 MCP Talent Network v'"${VERSION}"' deployed successfully"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "✅ *Server is live and ready to use*\n🔐 Sign in with your Rakettitiede Google account"
-                  }
-                },
-                {
-                  "type": "divider"
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "📖 <https://github.com/rakettitiede/mcp-talent-network/releases/tag/v'"${VERSION}"'|View full changelog>\n💬 Questions? Drop them below 👇"
-                  }
-                }
-              ]
-            }' \
-            "$SLACK_WEBHOOK_URL"
-
       - name: '🔐 Send API_KEY to Marko and Nicoandres (Private DMs)'
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         run: |
           VERSION=$(jq -r .version package.json)
           API_KEY=$(cat api_key.txt 2>/dev/null || echo "TEST_KEY_1234")
-          
+
           # Send to Nicoandres
           curl -X POST https://slack.com/api/chat.postMessage \
             -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "{\"channel\":\"@nicoandres\",\"text\":\"⚙️ New server version ${VERSION}\\n🔑 API key: \`${API_KEY}\`\"}"
-          
+            -d "{\"channel\":\"@nicoandres\",\"text\":\"⚙️ New server version ${VERSION}\n🔑 API key: \`${API_KEY}\`\"}"
+
           # Send to Marko
           curl -X POST https://slack.com/api/chat.postMessage \
             -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "{\"channel\":\"@marko\",\"text\":\"⚙️ New server version ${VERSION}\\n🔑 API key: \`${API_KEY}\`\"}"
+            -d "{\"channel\":\"@marko\",\"text\":\"⚙️ New server version ${VERSION}\n🔑 API key: \`${API_KEY}\`\"}"
