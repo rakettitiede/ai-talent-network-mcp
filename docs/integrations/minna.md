@@ -10,6 +10,8 @@ Generated with Imagen / Nano Banana (Vertex AI image generation).
 
 > A realistic professional profile picture of a virtual Finnish woman in her early 30s. Calm, confident expression. Modern minimalist style. She is wearing a soft teal or muted blue-green sweater, complementary to a male colleague in gray. Clean neutral background, soft natural lighting. Slight smile, approachable and professional. Photorealistic, sharp focus on face. Suitable for a chat assistant profile picture.
 
+![Minna profile picture](../assets/Minna.png)
+
 **Design rationale:** Teal/blue-green sweater pairs visually with Pyry's gray sweater — same visual family, distinct identities.
 
 ## CustomGPT Configuration
