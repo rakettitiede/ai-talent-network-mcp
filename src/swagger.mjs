@@ -1,18 +1,17 @@
 import swaggerJSDoc from "swagger-jsdoc";
-
-import { SERVER_VERSION, SERVER_NAME } from "./constants.mjs";
+import { SERVER_VERSION, SERVER_URL, PARTNER } from "./constants.mjs";
 
 const swaggerOptions = {
   definition: {
     openapi: '3.1.0',
     info: {
-      title: 'Talent Network API',
+      title: `${PARTNER} Talent Network Node`,
       version: SERVER_VERSION,
-      description: 'API with search and fetch endpoints to match anonymized candidates based on skills, experience, and project history',
+      description: 'Search and fetch anonymized consultant candidates. No personal data is stored or returned.',
     },
     servers: [
       {
-        url: 'https://mcp-talent-network-938427813842.europe-north1.run.app/api/v1',
+        url: `${SERVER_URL}/api/v1`,
         description: 'Production server (Google Cloud Run)',
       },
     ],
@@ -42,4 +41,9 @@ const swaggerOptions = {
   apis: ['./src/api-router-v1.mjs'],
 };
 
-export const swaggerSpec = swaggerJSDoc(swaggerOptions);
+const rawSpec = swaggerJSDoc(swaggerOptions);
+
+rawSpec.paths['/search'].get.operationId = `${PARTNER}SearchCandidates`;
+rawSpec.paths['/fetch'].get.operationId = `${PARTNER}FetchCandidate`;
+
+export const swaggerSpec = rawSpec;

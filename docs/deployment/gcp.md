@@ -246,6 +246,10 @@ Set these in repository settings (Settings → Secrets and variables → Actions
 | `GCS_BUCKET` | `ai-talent-network-db` |
 | `AGILEDAY_BASE_URL` | Agileday API base URL |
 | `GOOGLE_CLIENT_ID` | Google OAuth client ID (for Custom GPT) |
+| `SERVER_URL` | Base URL of the deployed service (e.g. `https://your-service.run.app`). Used in OpenAPI spec — `/api/v1` is appended automatically. Defaults to `unknown` if not set. |
+| `PARTNER` | Partner company name, no spaces or hyphens, lowercase (e.g. `rakettitiede`, `fraktio`, `techconsultinginc`). Used as operationId prefix in OpenAPI spec for Minna CustomGPT compatibility. Defaults to `unknown` if not set. |
+
+> **2-step deploy note:** `SERVER_URL` is only known after the first deploy. On first deploy, omit it — the OpenAPI spec will show `unknown` as the server URL. After the Cloud Run URL is known, set `SERVER_URL` and `PARTNER` as environment variables and redeploy. This ensures the OpenAPI schema at `/api-docs` contains the correct URL and partner-prefixed operationIds for CustomGPT (Minna) action import.
 
 ## Deployment
 

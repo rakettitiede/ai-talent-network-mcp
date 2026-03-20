@@ -113,7 +113,7 @@ export const apiRouterV1 = express.Router();
  * @openapi
  * /search:
  *   get:
- *     operationId: searchCandidates
+ *     operationId: SearchCandidates
  *     summary: Search for anonymized candidates
  *     description: >
  *       Search for candidates by skill, role, or description. Returns anonymized results only —
@@ -188,7 +188,7 @@ apiRouterV1.get("/search", async (req, res) => {
  * @openapi
  * /fetch:
  *   get:
- *     operationId: fetchCandidate
+ *     operationId: FetchCandidate
  *     summary: Fetch full anonymized candidate or project document
  *     description: >
  *       Retrieve a full anonymized candidate profile or project document by ID.

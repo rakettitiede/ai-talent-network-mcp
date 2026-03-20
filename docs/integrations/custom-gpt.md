@@ -26,6 +26,8 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 In the Custom GPT configuration:
 
 1. **Authentication Type**: OAuth
+
+> **Note:** The OpenAPI spec exposes only OAuth2 authentication. CustomGPT raises an error when multiple authentication methods are present in the schema, so API key auth is intentionally omitted from the spec even though the server supports it (`X-API-Key` header and `?api_key=` query param). Use OAuth2 when importing the schema into CustomGPT.
 2. **Client ID**: `any-value` (e.g., "talent-network-custom-gpt")
 3. **Client Secret**: `any-value` (e.g., "not-used")
 4. **Authorization URL**: `https://your-cloud-run-url/oauth/authorize`
