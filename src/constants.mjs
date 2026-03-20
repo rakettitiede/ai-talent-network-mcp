@@ -23,4 +23,6 @@ export const RAKETTITIEDE_WEBSITE = 'https://www.rakettitiede.com';
 export const REFRESH_DATA = process.env.REFRESH_DATA === "1"? true : false;
 export const SERVER_NAME = pkg.name;
 export const SERVER_VERSION = pkg.version;
+export const SERVER_URL = process.env.SERVER_URL || `http://localhost:${process.env.PORT || 8080}/api/v1`;
+export const PARTNER = process.env.PARTNER || 'unknown';
 export const SLACK_API_BASE_URL = process.env.SLACK_API_BASE_URL || "https://slack.com";

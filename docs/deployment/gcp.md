@@ -246,6 +246,10 @@ Set these in repository settings (Settings → Secrets and variables → Actions
 | `GCS_BUCKET` | `ai-talent-network-db` |
 | `AGILEDAY_BASE_URL` | Agileday API base URL |
 | `GOOGLE_CLIENT_ID` | Google OAuth client ID (for Custom GPT) |
+| `SERVER_URL` | Full base URL for the OpenAPI spec (e.g. `https://my-service.run.app/api/v1`) |
+| `PARTNER` | Partner name used to prefix operationIds (e.g. `rakettitiede`, `fraktio`) |
+
+> **2-step deploy:** `SERVER_URL` requires the Cloud Run URL, which is only known after the first deploy. On first deploy, omit it (the spec will use `localhost`). After deploy, set the variable and redeploy.
 
 ## Deployment
 
