@@ -43,15 +43,11 @@ const swaggerOptions = {
 
 const rawSpec = swaggerJSDoc(swaggerOptions);
 
-// Inject partner-specific operationIds so multiple nodes can be connected
-// to the same CustomGPT (e.g. Minna) without operationId collisions.
-// e.g. PARTNER=rakettitiede → rakettitiedeSearchCandidates, rakettitiedeFetchCandidate
-const camelPartner = PARTNER.charAt(0).toLowerCase() + PARTNER.slice(1);
 if (rawSpec.paths) {
   for (const path of Object.values(rawSpec.paths)) {
     for (const operation of Object.values(path)) {
       if (operation.operationId) {
-        operation.operationId = camelPartner + operation.operationId.charAt(0).toUpperCase() + operation.operationId.slice(1);
+        operation.operationId = PARTNER + operation.operationId.charAt(0).toUpperCase() + operation.operationId.slice(1);
       }
     }
   }
