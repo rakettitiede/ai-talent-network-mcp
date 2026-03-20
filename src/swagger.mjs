@@ -43,14 +43,7 @@ const swaggerOptions = {
 
 const rawSpec = swaggerJSDoc(swaggerOptions);
 
-if (rawSpec.paths) {
-  for (const path of Object.values(rawSpec.paths)) {
-    for (const operation of Object.values(path)) {
-      if (operation.operationId) {
-        operation.operationId = PARTNER + operation.operationId;
-      }
-    }
-  }
-}
+rawSpec.paths['/search'].get.operationId = `${PARTNER}SearchCandidates`;
+rawSpec.paths['/fetch'].get.operationId = `${PARTNER}FetchCandidate`;
 
 export const swaggerSpec = rawSpec;
