@@ -17,18 +17,6 @@ const swaggerOptions = {
     ],
     components: {
       securitySchemes: {
-        ApiKeyHeader: {
-          type: 'apiKey',
-          in: 'header',
-          name: 'X-API-Key',
-          description: 'API key authentication via X-API-Key header'
-        },
-        ApiKeyQuery: {
-          type: 'apiKey',
-          in: 'query',
-          name: 'api_key',
-          description: 'API key authentication via query parameter'
-        },
         OAuth2: {
           type: 'oauth2',
           description: 'OAuth2 authentication via Google',
@@ -47,8 +35,6 @@ const swaggerOptions = {
       }
     },
     security: [
-      { ApiKeyHeader: [] },
-      { ApiKeyQuery: [] },
       { OAuth2: ['openid', 'email', 'profile'] }
     ]
   },
