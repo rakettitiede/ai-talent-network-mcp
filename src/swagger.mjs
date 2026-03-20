@@ -11,7 +11,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: SERVER_URL,
+        url: `${SERVER_URL}/api/v1`,
         description: 'Production server (Google Cloud Run)',
       },
     ],
