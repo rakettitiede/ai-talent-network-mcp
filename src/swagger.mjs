@@ -28,12 +28,28 @@ const swaggerOptions = {
           in: 'query',
           name: 'api_key',
           description: 'API key authentication via query parameter'
+        },
+        OAuth2: {
+          type: 'oauth2',
+          description: 'OAuth2 authentication via Google',
+          flows: {
+            authorizationCode: {
+              authorizationUrl: '/oauth/authorize',
+              tokenUrl: '/oauth/token',
+              scopes: {
+                'openid': 'OpenID Connect',
+                'email': 'Access email address',
+                'profile': 'Access user profile'
+              }
+            }
+          }
         }
       }
     },
     security: [
       { ApiKeyHeader: [] },
-      { ApiKeyQuery: [] }
+      { ApiKeyQuery: [] },
+      { OAuth2: ['openid', 'email', 'profile'] }
     ]
   },
   apis: ['./src/api-router-v1.mjs'],
