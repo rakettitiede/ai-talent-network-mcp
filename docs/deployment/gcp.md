@@ -287,6 +287,21 @@ The API key is auto-generated during deploy — find it in the GitHub release no
 
 > The AgileDay token requires HR Admin permissions. It is passed as a request body parameter only — never stored as an environment variable.
 
+### Second deploy — set SERVER_URL and PARTNER
+
+Once the Cloud Run URL is known, set the GitHub variables and trigger a redeploy:
+
+```bash
+gh variable set SERVER_URL --repo $REPO --body "https://your-cloud-run-url"
+gh variable set PARTNER --repo $REPO --body "yourpartnername"
+
+# Trigger redeploy
+npm version patch -m "chore: set SERVER_URL and PARTNER"
+git push && git push --tags
+```
+
+This updates the OpenAPI schema at `/api-docs` with the correct server URL and partner-prefixed operationIds, required for CustomGPT (Minna) action import.
+
 ## Monitoring
 
 ### View logs
