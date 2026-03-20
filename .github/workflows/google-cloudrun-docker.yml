@@ -90,7 +90,9 @@ jobs:
             GCS_BUCKET=${{ vars.GCS_BUCKET }},
             AGILEDAY_BASE_URL=${{ vars.AGILEDAY_BASE_URL }},
             API_KEY=${{ env.API_KEY }},
-            GOOGLE_CLIENT_ID=${{ vars.GOOGLE_CLIENT_ID }}
+            GOOGLE_CLIENT_ID=${{ vars.GOOGLE_CLIENT_ID }},
+            SERVER_URL=${{ vars.SERVER_URL }},
+            PARTNER=${{ vars.PARTNER }}
           secrets: |
             GOOGLE_CLIENT_SECRET=google-client-secret:latest
       - name: 'Show output'
