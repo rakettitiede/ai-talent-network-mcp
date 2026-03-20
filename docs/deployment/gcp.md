@@ -249,7 +249,7 @@ Set these in repository settings (Settings → Secrets and variables → Actions
 | `SERVER_URL` | Base URL of the deployed service (e.g. `https://your-service.run.app`). Used in OpenAPI spec — `/api/v1` is appended automatically. Defaults to `unknown` if not set. |
 | `PARTNER` | Partner company name, no spaces or hyphens, lowercase (e.g. `rakettitiede`, `fraktio`, `techconsultinginc`). Used as operationId prefix in OpenAPI spec for Minna CustomGPT compatibility. Defaults to `unknown` if not set. |
 
-> **2-step deploy note:** `SERVER_URL` is only known after the first deploy. On first deploy, omit it — the OpenAPI spec will show `unknown` as the server URL. After the Cloud Run URL is known, set `SERVER_URL` and `PARTNER` as environment variables and redeploy. This ensures the OpenAPI schema at `/api-docs` contains the correct URL and partner-prefixed operationIds for CustomGPT (Minna) action import.
+> **Note:** `SERVER_URL` and `PARTNER` are only known after the first deploy. On first deploy, omit them — the OpenAPI spec will show `unknown` as defaults. After the Cloud Run URL is known, set them directly on the service via `gcloud run services update` (see [After first deploy](#after-first-deploy--set-server_url-and-partner) below) — no redeploy needed.
 
 ## Deployment
 
@@ -286,6 +286,18 @@ curl -X POST https://<your-cloud-run-url>/api/v1/refresh \
 The API key is auto-generated during deploy — find it in the GitHub release notes or the Slack notification.
 
 > The AgileDay token requires HR Admin permissions. It is passed as a request body parameter only — never stored as an environment variable.
+
+### After first deploy — set SERVER_URL and PARTNER
+
+Once the Cloud Run URL is known, set the env vars directly on the service — no redeploy needed:
+
+```bash
+gcloud run services update $SERVICE \
+  --region $REGION \
+  --set-env-vars SERVER_URL=https://your-cloud-run-url,PARTNER=yourpartnername
+```
+
+This updates the OpenAPI schema at `/api-docs` with the correct server URL and partner-prefixed operationIds, required for CustomGPT (Minna) action import.
 
 ## Monitoring
 
