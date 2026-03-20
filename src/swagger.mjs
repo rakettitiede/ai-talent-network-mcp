@@ -47,7 +47,7 @@ if (rawSpec.paths) {
   for (const path of Object.values(rawSpec.paths)) {
     for (const operation of Object.values(path)) {
       if (operation.operationId) {
-        operation.operationId = PARTNER + operation.operationId.charAt(0).toUpperCase() + operation.operationId.slice(1);
+        operation.operationId = PARTNER + operation.operationId;
       }
     }
   }
